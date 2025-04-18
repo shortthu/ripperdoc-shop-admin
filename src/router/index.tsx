@@ -5,14 +5,21 @@ import Products from "@/pages/Products";
 import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
 
+import { APP_ROUTES } from "@/lib/routes";
+
 export const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/admin",
     element: <DashboardLayout />,
     children: [
       { index: true, element: <Dashboard /> },
-      { path: "products", element: <Products /> },
-      { path: "users", element: <Users /> },
+      { path: APP_ROUTES.categories },
+      { path: APP_ROUTES.products, element: <Products /> },
+      { path: APP_ROUTES.customers, element: <Users /> },
+      { path: APP_ROUTES.orders },
+      { path: APP_ROUTES.login },
+      { path: APP_ROUTES.logout },
+      { path: "me" },
     ],
   },
   {

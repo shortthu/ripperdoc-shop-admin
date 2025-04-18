@@ -1,7 +1,6 @@
 import * as React from "react";
 
 import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -15,132 +14,36 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
+import { APP_ROUTES, UI_LABELS } from "@/lib/routes";
+
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
-      title: "Getting Started",
-      url: "#",
+      title: `${UI_LABELS.products} Management`,
+      // url: APP_ROUTES.dashboard,
       items: [
         {
-          title: "Installation",
-          url: "#",
+          title: UI_LABELS.categories,
+          url: APP_ROUTES.categories,
         },
         {
-          title: "Project Structure",
-          url: "#",
+          title: UI_LABELS.brands,
+          url: APP_ROUTES.brands,
+        },
+        {
+          title: UI_LABELS.products,
+          url: APP_ROUTES.products,
         },
       ],
     },
     {
-      title: "Building Your Application",
-      url: "#",
+      title: `${UI_LABELS.customers} Management`,
+      url: APP_ROUTES.customers,
       items: [
         {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
+          title: `${UI_LABELS.customers} List`,
+          url: APP_ROUTES.customers,
         },
       ],
     },
@@ -151,10 +54,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
         <SearchForm />
       </SidebarHeader>
       <SidebarContent>
@@ -164,10 +63,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild isActive={item.isActive}>
-                      <a href={item.url}>{item.title}</a>
+                {item.items.map((childItem) => (
+                  <SidebarMenuItem key={childItem.title}>
+                    <SidebarMenuButton asChild isActive={childItem.isActive}>
+                      <a href={childItem.url}>{childItem.title}</a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
