@@ -18,6 +18,12 @@ import { APP_ROUTES, UI_LABELS } from "@/lib/routes";
 
 // This is sample data.
 const data = {
+  header: [
+    {
+      title: "Dashboard",
+      url: APP_ROUTES.dashboard,
+    },
+  ],
   navMain: [
     {
       title: `${UI_LABELS.products} Management`,
@@ -54,6 +60,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <a href={data.header[0].url}>{data.header[0].title}</a>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
         <SearchForm />
       </SidebarHeader>
       <SidebarContent>
