@@ -4,6 +4,7 @@ import { SearchForm } from "@/components/search-form";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/sidebar";
 
 import { APP_ROUTES, UI_LABELS } from "@/lib/routes";
+import { NavUser } from "./nav-user";
 
 // This is sample data.
 const data = {
@@ -67,7 +69,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SearchForm />
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
@@ -88,6 +89,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </SidebarGroup>
         ))}
       </SidebarContent>
+      <SidebarFooter>
+        <NavUser
+          user={{
+            name: "Me",
+            email: "hehe@gmail.com",
+            avatar: "whocares",
+          }}
+        />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
