@@ -6,12 +6,12 @@ import NotFound from "@/pages/NotFound";
 import Categories from "@/pages/Categories";
 import Brands from "@/pages/Brands";
 
-import { APP_ROUTES } from "@/lib/routes";
+import { APP_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";
 import Login from "@/pages/Login";
 
 export const router = createBrowserRouter([
   {
-    path: "/admin",
+    path: APP_ROUTE_PREFIX,
     element: <DashboardLayout />,
     children: [
       // { index: true, element: <Dashboard /> },

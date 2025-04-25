@@ -1,4 +1,5 @@
 export const APP_NAME = "Ripperdoc's Terminal";
+export const APP_ROUTE_PREFIX = "/terminal";
 
 export const API_ROUTES = {
   products: {
@@ -29,13 +30,16 @@ export const UI_LABELS = {
 };
 
 export const APP_ROUTES = {
-  login: { url: "/admin/jackin", name: UI_LABELS.login },
-  logout: { url: "/admin/jackout", name: UI_LABELS.logout },
-  dashboard: { url: "/admin", name: "Dashboard" },
-  categories: { url: "/admin/categories", name: UI_LABELS.categories },
-  brands: { url: "/admin/manufacturers", name: UI_LABELS.brands },
-  products: { url: "/admin/cyberwares", name: UI_LABELS.products },
-  customers: { url: "/admin/clients", name: UI_LABELS.customers },
+  login: { url: `${APP_ROUTE_PREFIX}/jackin`, name: UI_LABELS.login },
+  logout: { url: `${APP_ROUTE_PREFIX}/jackout`, name: UI_LABELS.logout },
+  dashboard: { url: APP_ROUTE_PREFIX, name: "Dashboard" },
+  categories: {
+    url: `${APP_ROUTE_PREFIX}/categories`,
+    name: UI_LABELS.categories,
+  },
+  brands: { url: `${APP_ROUTE_PREFIX}/manufacturers`, name: UI_LABELS.brands },
+  products: { url: `${APP_ROUTE_PREFIX}/cyberwares`, name: UI_LABELS.products },
+  customers: { url: `${APP_ROUTE_PREFIX}/clients`, name: UI_LABELS.customers },
   // Optional realm
-  orders: { url: "/admin/installations", name: UI_LABELS.orders },
+  orders: { url: `${APP_ROUTE_PREFIX}/installations`, name: UI_LABELS.orders },
 };
