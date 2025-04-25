@@ -1,3 +1,5 @@
+export const APP_NAME = "Ripperdoc's Terminal";
+
 export const API_ROUTES = {
   products: {
     base: "/api/admin/products",
@@ -15,18 +17,6 @@ export const API_ROUTES = {
   orders: { base: "/api/admin/orders" },
 };
 
-export const APP_ROUTES = {
-  login: "/admin/jackin",
-  logout: "/admin/jackout",
-  dashboard: "/admin",
-  categories: "/admin/categories",
-  brands: "/admin/manufacturers",
-  products: "/admin/cyberwares",
-  customers: "/admin/clients",
-  // Optional realm
-  orders: "/admin/installations",
-};
-
 export const UI_LABELS = {
   products: "Cyberware",
   categories: "Categories",
@@ -36,4 +26,16 @@ export const UI_LABELS = {
   orders: "Installations",
   login: "Jack In",
   logout: "Jack Out",
+};
+
+export const APP_ROUTES = {
+  login: { url: "/admin/jackin", name: UI_LABELS.login },
+  logout: { url: "/admin/jackout", name: UI_LABELS.logout },
+  dashboard: { url: "/admin", name: "Dashboard" },
+  categories: { url: "/admin/categories", name: UI_LABELS.categories },
+  brands: { url: "/admin/manufacturers", name: UI_LABELS.brands },
+  products: { url: "/admin/cyberwares", name: UI_LABELS.products },
+  customers: { url: "/admin/clients", name: UI_LABELS.customers },
+  // Optional realm
+  orders: { url: "/admin/installations", name: UI_LABELS.orders },
 };

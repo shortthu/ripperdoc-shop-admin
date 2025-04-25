@@ -1,6 +1,6 @@
 import * as React from "react";
+import { useLocation, Link } from "react-router";
 
-import { SearchForm } from "@/components/search-form";
 import {
   Sidebar,
   SidebarContent,
@@ -15,15 +15,18 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-import { APP_ROUTES, UI_LABELS } from "@/lib/routes";
+import { APP_NAME, APP_ROUTES, UI_LABELS } from "@/lib/routes";
 import { NavUser } from "./nav-user";
 
-// This is sample data.
+type SidebarProps = {
+  sendTitle: (title: string) => void;
+} & React.ComponentProps<typeof Sidebar>;
+
 const data = {
   header: [
     {
-      title: "Dashboard",
-      url: APP_ROUTES.dashboard,
+      title: APP_NAME,
+      url: APP_ROUTES.dashboard.url,
     },
   ],
   navMain: [
@@ -32,43 +35,52 @@ const data = {
       // url: APP_ROUTES.dashboard,
       items: [
         {
-          title: UI_LABELS.categories,
-          url: APP_ROUTES.categories,
+          title: APP_ROUTES.categories.name,
+          url: APP_ROUTES.categories.url,
         },
         {
-          title: UI_LABELS.brands,
-          url: APP_ROUTES.brands,
+          title: APP_ROUTES.brands.name,
+          url: APP_ROUTES.brands.url,
         },
         {
-          title: UI_LABELS.products,
-          url: APP_ROUTES.products,
+          title: APP_ROUTES.products.name,
+          url: APP_ROUTES.products.url,
         },
       ],
     },
     {
-      title: `${UI_LABELS.customers} Management`,
-      url: APP_ROUTES.customers,
+      title: `${APP_ROUTES.customers.name} Management`,
+      url: APP_ROUTES.customers.url,
       items: [
         {
-          title: `${UI_LABELS.customers} List`,
-          url: APP_ROUTES.customers,
+          title: `${APP_ROUTES.customers.name} List`,
+          url: APP_ROUTES.customers.url,
         },
       ],
     },
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ sendTitle, ...props }: SidebarProps) {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  React.useEffect(() => {
+    const currentItem = data.navMain
+      .flatMap((group) => group.items)
+      .find((item) => item.url === currentPath);
+
+    if (currentItem) {
+      sendTitle(currentItem.title);
+    } else {
+      sendTitle(data.header[0].title);
+    }
+  }, [currentPath]);
+
   return (
     <Sidebar {...props}>
-      <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton>
-              <a href={data.header[0].url}>{data.header[0].title}</a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+      <SidebarHeader className="flex h-16 shrink-0 px-4 justify-center">
+        <h1 className="font-bold">{data.header[0].title}</h1>
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
@@ -79,8 +91,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               <SidebarMenu>
                 {item.items.map((childItem) => (
                   <SidebarMenuItem key={childItem.title}>
-                    <SidebarMenuButton asChild isActive={childItem.isActive}>
-                      <a href={childItem.url}>{childItem.title}</a>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={currentPath === childItem.url}
+                    >
+                      <Link to={childItem.url}>{childItem.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
