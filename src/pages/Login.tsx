@@ -2,7 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import axiosInstance from "@/api/axiosInstance";
 import { LoginForm } from "@/components/login-form";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { API_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";
+import { AlertCircle } from "lucide-react";
+import { AxiosError } from "axios";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -20,19 +23,29 @@ export default function Login() {
         email,
         password,
       });
-      navigate(APP_ROUTE_PREFIX); // send them to the dashboard
+      navigate(APP_ROUTE_PREFIX);
     } catch (err) {
-      setError("Invalid credentials, choom.");
+      if (err instanceof AxiosError) {
+        err.response?.data
+          ? setError(err.response?.data)
+          : setError(err.message);
+      } else setError("Unknown error occurred");
     } finally {
       setLoading(false);
     }
   };
 
-  // TODO: Add alerts for errors
-
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm gap-2 flex flex-col">
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>An error occured</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <LoginForm
           email={email}
           password={password}
