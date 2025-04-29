@@ -20,6 +20,8 @@ import { NavUser } from "./nav-user";
 
 type SidebarProps = {
   sendTitle: (title: string) => void;
+  userEmail: string;
+  logout: () => void;
 } & React.ComponentProps<typeof Sidebar>;
 
 const data = {
@@ -61,7 +63,12 @@ const data = {
   ],
 };
 
-export function AppSidebar({ sendTitle, ...props }: SidebarProps) {
+export function AppSidebar({
+  sendTitle,
+  userEmail,
+  logout,
+  ...props
+}: SidebarProps) {
   const location = useLocation();
   const currentPath = location.pathname;
 
@@ -107,10 +114,9 @@ export function AppSidebar({ sendTitle, ...props }: SidebarProps) {
       <SidebarFooter>
         <NavUser
           user={{
-            name: "Me",
-            email: "hehe@gmail.com",
-            avatar: "whocares",
+            email: userEmail,
           }}
+          logout={logout}
         />
       </SidebarFooter>
       <SidebarRail />

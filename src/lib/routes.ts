@@ -13,6 +13,7 @@ export const API_ROUTES = {
   auth: {
     login: "/api/auth/login",
     logout: "/api/auth/logout",
+    whoami: "/api/auth/whoami",
   },
   // Optional realm
   orders: { base: "/api/admin/orders" },

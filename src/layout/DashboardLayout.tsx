@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { Outlet } from "react-router";
+import { Navigate, Outlet } from "react-router";
 import {
   SidebarInset,
   SidebarProvider,
@@ -8,7 +8,11 @@ import {
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@radix-ui/react-separator";
+
 import { ModeToggle } from "@/components/mode-toggle";
+import { APP_ROUTES } from "@/lib/routes";
+import { useAuth } from "@/hooks/useAuth";
+import { useLogout } from "@/hooks/useLogout";
 
 export default function DashboardLayout() {
   const [title, setTitle] = useState("Ripperdoc Clinic");
@@ -17,9 +21,21 @@ export default function DashboardLayout() {
     setTitle(newTitle);
   };
 
+  const logout = useLogout();
+
+  const { user, loading } = useAuth();
+
+  if (loading) return <div>Scanning the Net...</div>;
+
+  if (!user) return <Navigate to={APP_ROUTES.login.url} />;
+
   return (
     <SidebarProvider>
-      <AppSidebar sendTitle={handleTitleChange} />
+      <AppSidebar
+        sendTitle={handleTitleChange}
+        userEmail={user.username}
+        logout={logout}
+      />
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 justify-between">
           <div className="flex items-center h-full">

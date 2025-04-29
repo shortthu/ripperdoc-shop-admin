@@ -12,10 +12,23 @@ import { Label } from "@/components/ui/label";
 
 import { UI_LABELS } from "@/lib/routes";
 
+type LoginFormProps = {
+  email: string;
+  password: string;
+  onEmailChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  isLoading?: boolean;
+} & React.ComponentProps<"div">;
+
 export function LoginForm({
+  email,
+  password,
+  onEmailChange,
+  onPasswordChange,
+  isLoading = false,
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: LoginFormProps) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -26,14 +39,16 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={() => props.onSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-3">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="v@example.com"
+                  value={email}
+                  onChange={(e) => onEmailChange(e.target.value)}
                   required
                 />
               </div>
@@ -41,11 +56,17 @@ export function LoginForm({
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => onPasswordChange(e.target.value)}
+                  required
+                />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
-                  {UI_LABELS.login}
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? "Jacking in..." : UI_LABELS.login}
                 </Button>
               </div>
             </div>

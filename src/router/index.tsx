@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter, Navigate } from "react-router";
 import DashboardLayout from "@/layout/DashboardLayout";
 import Products from "@/pages/Products";
 import Users from "@/pages/Users";
@@ -14,8 +14,11 @@ export const router = createBrowserRouter([
     path: APP_ROUTE_PREFIX,
     element: <DashboardLayout />,
     children: [
-      // { index: true, element: <Dashboard /> },
-      { path: APP_ROUTES.categories.url, element: <Categories />, index: true },
+      {
+        index: true,
+        element: <Navigate to={APP_ROUTES.categories.url} replace />,
+      },
+      { path: APP_ROUTES.categories.url, element: <Categories /> },
       { path: APP_ROUTES.brands.url, element: <Brands /> },
       { path: APP_ROUTES.products.url, element: <Products /> },
       { path: APP_ROUTES.customers.url, element: <Users /> },

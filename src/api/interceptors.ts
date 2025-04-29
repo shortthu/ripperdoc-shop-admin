@@ -1,21 +1,18 @@
 import { AxiosInstance } from "axios";
+import { APP_ROUTES } from "@/lib/routes";
 
 export const setupInterceptors = (axiosInstance: AxiosInstance) => {
-  axiosInstance.interceptors.request.use(
-    async (config) => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
   axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-      console.error("API Error:", error.response);
+      if (error.response?.status === 401) {
+        console.warn(
+          `[api] 401 Unauthorized, redirecting to ${APP_ROUTES.login.url}...`
+        );
+        window.location.href = APP_ROUTES.login.url;
+      } else {
+        console.error("[api] Error: ", error.response);
+      }
       return Promise.reject(error);
     }
   );
