@@ -3,7 +3,7 @@ import DashboardLayout from "@/layout/DashboardLayout";
 import Products from "@/pages/Products";
 import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
-import Categories from "@/pages/Categories";
+import Categories from "@/pages/categories/Categories";
 import Brands from "@/pages/Brands";
 
 import { APP_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";

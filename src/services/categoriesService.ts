@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
 import { API_ROUTES } from "@/lib/routes";
+import { Category } from "@/types/category";
 
 export interface CategoryDTO {
   name: string;
@@ -8,7 +9,7 @@ export interface CategoryDTO {
 
 export const categoriesService = {
   getAll: (includeDeleted = false) => {
-    return axiosInstance.get(API_ROUTES.categories.base, {
+    return axiosInstance.get<Category[]>(API_ROUTES.categories.base, {
       params: {
         includeDeleted,
       },
