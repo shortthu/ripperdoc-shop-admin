@@ -1,13 +1,13 @@
-import axiosInstance from "@/api/axiosInstance";
 import { useNavigate } from "react-router";
-import { APP_ROUTES, API_ROUTES } from "@/lib/routes";
+import { APP_ROUTES } from "@/lib/routes";
+import { authService } from "@/services/authService";
 
 export const useLogout = () => {
   const navigate = useNavigate();
 
   const logout = async () => {
     try {
-      const res = await axiosInstance.post(API_ROUTES.auth.logout);
+      const res = await authService.logout();
       console.log("Jack out successful", res.data);
     } catch (err) {
       console.error("Jack out failed", err);

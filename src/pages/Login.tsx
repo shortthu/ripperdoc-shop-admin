@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import axiosInstance from "@/api/axiosInstance";
 import { LoginForm } from "@/components/login-form";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { API_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";
+import { APP_ROUTE_PREFIX } from "@/lib/routes";
+import { authService } from "@/services/authService";
 import { AlertCircle } from "lucide-react";
 import { AxiosError } from "axios";
 
@@ -19,7 +19,7 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
     try {
-      await axiosInstance.post(API_ROUTES.auth.login, {
+      await authService.login({
         email,
         password,
       });
