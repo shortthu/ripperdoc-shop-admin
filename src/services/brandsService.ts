@@ -1,0 +1,35 @@
+import axiosInstance from "@/api/axiosInstance";
+import { API_ROUTES } from "@/lib/routes";
+
+export interface BrandDTO {
+  name: string;
+  description: string;
+}
+
+export const brandsService = {
+  getAll: (includeDeleted = false) => {
+    return axiosInstance.get(API_ROUTES.brands.base, {
+      params: {
+        includeDeleted,
+      },
+    });
+  },
+  create: (brand: BrandDTO) => {
+    return axiosInstance.post(API_ROUTES.brands.base, brand);
+  },
+  getById: (brandId: string) => {
+    return axiosInstance.get(API_ROUTES.brands.byId(brandId));
+  },
+  update: (brandId: string, brand: BrandDTO) => {
+    return axiosInstance.put(API_ROUTES.brands.byId(brandId), brand);
+  },
+  softDelete: (brandId: string) => {
+    return axiosInstance.delete(API_ROUTES.brands.byId(brandId));
+  },
+  hardDelete: (brandId: string) => {
+    return axiosInstance.delete(API_ROUTES.brands.hardDelete(brandId));
+  },
+  restore: (brandId: string) => {
+    return axiosInstance.post(API_ROUTES.brands.restore(brandId));
+  },
+};

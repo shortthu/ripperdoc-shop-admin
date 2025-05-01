@@ -1,0 +1,35 @@
+import axiosInstance from "@/api/axiosInstance";
+import { API_ROUTES } from "@/lib/routes";
+
+export interface CategoryDTO {
+  name: string;
+  description: string;
+}
+
+export const categoriesService = {
+  getAll: (includeDeleted = false) => {
+    return axiosInstance.get(API_ROUTES.categories.base, {
+      params: {
+        includeDeleted,
+      },
+    });
+  },
+  create: (category: CategoryDTO) => {
+    return axiosInstance.post(API_ROUTES.categories.base, category);
+  },
+  getById: (categoryId: string) => {
+    return axiosInstance.get(API_ROUTES.categories.byId(categoryId));
+  },
+  update: (categoryId: string, category: CategoryDTO) => {
+    return axiosInstance.put(API_ROUTES.categories.byId(categoryId), category);
+  },
+  softDelete: (categoryId: string) => {
+    return axiosInstance.delete(API_ROUTES.categories.byId(categoryId));
+  },
+  hardDelete: (categoryId: string) => {
+    return axiosInstance.delete(API_ROUTES.categories.hardDelete(categoryId));
+  },
+  restore: (categoryId: string) => {
+    return axiosInstance.post(API_ROUTES.categories.restore(categoryId));
+  },
+};
