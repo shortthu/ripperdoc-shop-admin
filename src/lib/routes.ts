@@ -1,22 +1,43 @@
 export const APP_NAME = "Ripperdoc's Terminal";
 export const APP_ROUTE_PREFIX = "/terminal";
+export const API_ROUTE_PREFIX = "/api/admin";
 
 export const API_ROUTES = {
   products: {
-    base: "/api/admin/products",
-    featured: "/api/admin/products/:id/featured",
-    rating: "/api/admin/products/:id/rating",
+    base: `${APP_ROUTE_PREFIX}/products`,
+    byId: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}`,
+    feature: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/feature`,
+    unfeature: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/unfeature`,
+    restore: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/restore`,
+    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/hard`,
   },
-  categories: { base: "/api/admin/categories" },
-  brands: { base: "/api/admin/brands" },
-  customers: { base: "/api/admin/customers" },
+  productRatings: {
+    base: `${APP_ROUTE_PREFIX}/ratings`,
+    byId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/${id}`,
+    restore: (id: string) => `${APP_ROUTE_PREFIX}/ratings/${id}/restore`,
+    byProductId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/by-product/${id}`,
+    byUserId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/by-user/${id}`,
+  },
+  categories: {
+    base: `${APP_ROUTE_PREFIX}/categories`,
+    byId: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}`,
+    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}/hard`,
+    restore: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}/restore`,
+  },
+  brands: {
+    base: `${APP_ROUTE_PREFIX}/brands`,
+    byId: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}`,
+    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}/hard`,
+    restore: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}/restore`,
+  },
+  customers: { base: `${APP_ROUTE_PREFIX}/customers` },
   auth: {
-    login: "/api/auth/login",
-    logout: "/api/auth/logout",
-    whoami: "/api/auth/whoami",
+    login: `/api/auth/login`,
+    logout: `/api/auth/logout`,
+    whoami: `/api/auth/whoami`,
   },
   // Optional realm
-  orders: { base: "/api/admin/orders" },
+  orders: { base: `${APP_ROUTE_PREFIX}/orders` },
 };
 
 export const UI_LABELS = {
