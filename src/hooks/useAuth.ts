@@ -1,11 +1,5 @@
 import { useEffect, useState } from "react";
-import axiosInstance from "@/api/axiosInstance";
-import { API_ROUTES } from "@/lib/routes";
-
-interface User {
-  username: string;
-  roles: string[];
-}
+import { authService, User } from "@/services/authService";
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -14,7 +8,7 @@ export const useAuth = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axiosInstance.get<User>(API_ROUTES.auth.whoami);
+        const res = await authService.whoami();
         setUser(res.data);
       } catch (err) {
         setUser(null);
