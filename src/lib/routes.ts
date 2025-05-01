@@ -4,40 +4,40 @@ export const API_ROUTE_PREFIX = "/api/admin";
 
 export const API_ROUTES = {
   products: {
-    base: `${APP_ROUTE_PREFIX}/products`,
-    byId: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}`,
-    feature: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/feature`,
-    unfeature: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/unfeature`,
-    restore: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/restore`,
-    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/products/${id}/hard`,
+    base: `${API_ROUTE_PREFIX}/products`,
+    byId: (id: string) => `${API_ROUTE_PREFIX}/products/${id}`,
+    feature: (id: string) => `${API_ROUTE_PREFIX}/products/${id}/feature`,
+    unfeature: (id: string) => `${API_ROUTE_PREFIX}/products/${id}/unfeature`,
+    restore: (id: string) => `${API_ROUTE_PREFIX}/products/${id}/restore`,
+    hardDelete: (id: string) => `${API_ROUTE_PREFIX}/products/${id}/hard`,
   },
   productRatings: {
-    base: `${APP_ROUTE_PREFIX}/ratings`,
-    byId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/${id}`,
-    restore: (id: string) => `${APP_ROUTE_PREFIX}/ratings/${id}/restore`,
-    byProductId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/by-product/${id}`,
-    byUserId: (id: string) => `${APP_ROUTE_PREFIX}/ratings/by-user/${id}`,
+    base: `${API_ROUTE_PREFIX}/ratings`,
+    byId: (id: string) => `${API_ROUTE_PREFIX}/ratings/${id}`,
+    restore: (id: string) => `${API_ROUTE_PREFIX}/ratings/${id}/restore`,
+    byProductId: (id: string) => `${API_ROUTE_PREFIX}/ratings/by-product/${id}`,
+    byUserId: (id: string) => `${API_ROUTE_PREFIX}/ratings/by-user/${id}`,
   },
   categories: {
-    base: `${APP_ROUTE_PREFIX}/categories`,
-    byId: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}`,
-    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}/hard`,
-    restore: (id: string) => `${APP_ROUTE_PREFIX}/categories/${id}/restore`,
+    base: `${API_ROUTE_PREFIX}/categories`,
+    byId: (id: string) => `${API_ROUTE_PREFIX}/categories/${id}`,
+    hardDelete: (id: string) => `${API_ROUTE_PREFIX}/categories/${id}/hard`,
+    restore: (id: string) => `${API_ROUTE_PREFIX}/categories/${id}/restore`,
   },
   brands: {
-    base: `${APP_ROUTE_PREFIX}/brands`,
-    byId: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}`,
-    hardDelete: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}/hard`,
-    restore: (id: string) => `${APP_ROUTE_PREFIX}/brands/${id}/restore`,
+    base: `${API_ROUTE_PREFIX}/brands`,
+    byId: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}`,
+    hardDelete: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/hard`,
+    restore: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/restore`,
   },
-  customers: { base: `${APP_ROUTE_PREFIX}/customers` },
+  customers: { base: `${API_ROUTE_PREFIX}/customers` },
   auth: {
     login: `/api/auth/login`,
     logout: `/api/auth/logout`,
     whoami: `/api/auth/whoami`,
   },
   // Optional realm
-  orders: { base: `${APP_ROUTE_PREFIX}/orders` },
+  orders: { base: `${API_ROUTE_PREFIX}/orders` },
 };
 
 export const UI_LABELS = {
