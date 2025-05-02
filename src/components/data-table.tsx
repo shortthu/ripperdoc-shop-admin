@@ -13,15 +13,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Loader2 } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  loading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -64,6 +67,12 @@ export function DataTable<TData, TValue>({
                 ))}
               </TableRow>
             ))
+          ) : loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24">
+                <Loader2 className="animate-spin" />
+              </TableCell>
+            </TableRow>
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

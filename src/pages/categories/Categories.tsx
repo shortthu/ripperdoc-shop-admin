@@ -4,6 +4,7 @@ import { categoriesService } from "@/services/categoriesService";
 import { useEffect, useState } from "react";
 import { Category } from "@/types/category";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 export default function Categories() {
   const [data, setData] = useState<Category[]>([]);
@@ -14,7 +15,6 @@ export default function Categories() {
     const fetchCategories = async () => {
       try {
         const response = await categoriesService.getAll();
-        console.log(response);
         setData(response.data);
       } catch (err) {
         setError("Failed to fetch categories");
@@ -36,8 +36,12 @@ export default function Categories() {
   }
 
   return (
-    <div className="container mx-auto">
-      <DataTable columns={columns} data={data} />
+    <div className="container mx-auto flex flex-col gap-4">
+      <div className="flex flex-row-reverse">
+        <Button>Create</Button>
+      </div>
+
+      <DataTable columns={columns} data={data} loading={loading} />
     </div>
   );
 }
