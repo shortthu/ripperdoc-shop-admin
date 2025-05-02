@@ -1,31 +1,14 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { VisibilityState } from "@tanstack/react-table";
-import { Category } from "@/types/category";
-import { categoriesService } from "@/services/categoriesService";
-import { categoryFormSchema } from "./CategoryForm";
+import { toast } from "sonner";
 import { z } from "zod";
 
-// export function useTable() {
-//   const [data, setData] = useState<Category[]>([]);
-//   const [tableLoading, setTableLoading] = useState(true);
-//   const [includeDeleted, setIncludeDeleted] = useState(false);
-//   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-//     deletedAt: includeDeleted,
-//   });
+import { categoriesService } from "@/services/categoriesService";
+import { Category } from "@/types/category";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { VisibilityState } from "@tanstack/react-table";
 
-//   return {
-//     data,
-//     setData,
-//     tableLoading,
-//     setTableLoading,
-//     includeDeleted,
-//     setIncludeDeleted,
-//     columnVisibility,
-//     setColumnVisibility,
-//   };
-// }
+import { categoryFormSchema } from "./CategoryForm";
 
 export function useCategories() {
   const [data, setData] = useState<Category[]>([]);
@@ -123,24 +106,51 @@ export function useCategories() {
   const handleConfirmOperation = async () => {
     try {
       setIsDataLoading(true);
+
+      let promise;
+
       switch (deleteMode) {
         case "soft":
-          await categoriesService.softDelete(selectedCategoryId);
+          promise = categoriesService.softDelete(selectedCategoryId);
           break;
         case "hard":
-          await categoriesService.hardDelete(selectedCategoryId);
+          promise = categoriesService.hardDelete(selectedCategoryId);
           break;
         case "restore":
-          await categoriesService.restore(selectedCategoryId);
+          promise = categoriesService.restore(selectedCategoryId);
           break;
-        // default:
-        //   await categoriesService.softDelete(categoryId);
-        //   break;
       }
+
+      await promise;
+
+      toast.promise(promise, {
+        loading: `${
+          deleteMode === "restore"
+            ? "Restoring"
+            : deleteMode === "hard"
+            ? "Deleting"
+            : "Trashing"
+        } category...`,
+        success: `Category ${
+          deleteMode === "restore"
+            ? "restored"
+            : deleteMode === "hard"
+            ? "deleted"
+            : "trashed"
+        } successfully`,
+        error: `Failed to ${
+          deleteMode === "restore"
+            ? "restore"
+            : deleteMode === "hard"
+            ? "delete"
+            : "trash"
+        } category`,
+      });
+
       await fetchCategories(includeDeleted);
     } catch (error) {
-      // TODO: handle error on UI
       console.error("Operation failed:", error);
+      toast.error("Operation failed");
     } finally {
       setOpenConfirmDialog(false);
       setIsDataLoading(false);
@@ -151,11 +161,21 @@ export function useCategories() {
     try {
       setIsDataLoading(true);
 
-      if (isEditMode) {
-        await categoriesService.update(category.id, values);
-      } else {
-        await categoriesService.create(values);
-      }
+      const promise = isEditMode
+        ? categoriesService.update(category.id, values)
+        : categoriesService.create(values);
+
+      await promise;
+
+      toast.promise(promise, {
+        loading: isEditMode ? "Updating category..." : "Creating category...",
+        success: isEditMode
+          ? "Category updated successfully"
+          : "Category created successfully",
+        error: isEditMode
+          ? "Failed to update category"
+          : "Failed to create category",
+      });
 
       await fetchCategories(includeDeleted);
       setOpenSheet(false);
@@ -199,7 +219,6 @@ export function useCategories() {
     handleConfirmOperation,
     onSubmit,
     alertMessage,
-    // setAlertMessage,
     fetchCategories,
   };
 }

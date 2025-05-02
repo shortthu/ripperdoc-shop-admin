@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
-
 import { Navigate, Outlet } from "react-router";
+
+import { AppSidebar } from "@/components/app-sidebar";
+import { ModeToggle } from "@/components/mode-toggle";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
-import { Separator } from "@radix-ui/react-separator";
-
-import { ModeToggle } from "@/components/mode-toggle";
-import { APP_ROUTES } from "@/lib/routes";
+import { Toaster } from "@/components/ui/sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { useLogout } from "@/hooks/useLogout";
+import { APP_ROUTES } from "@/lib/routes";
+import { Separator } from "@radix-ui/react-separator";
 
 export default function DashboardLayout() {
   const [title, setTitle] = useState("Ripperdoc Clinic");
@@ -62,6 +62,7 @@ export default function DashboardLayout() {
         </header>
         <main className="p-4">
           <Outlet />
+          <Toaster />
         </main>
       </SidebarInset>
     </SidebarProvider>
