@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { UI_LABELS } from "@/lib/routes";
+import { Loader2 } from "lucide-react";
 
 type LoginFormProps = {
   email: string;
@@ -66,6 +67,7 @@ export function LoginForm({
               </div>
               <div className="flex flex-col gap-3">
                 <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading && <Loader2 className="animate-spin" />}
                   {isLoading ? "Jacking in..." : UI_LABELS.login}
                 </Button>
               </div>
