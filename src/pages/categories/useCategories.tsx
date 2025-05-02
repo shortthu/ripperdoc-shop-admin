@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -10,21 +10,73 @@ import { VisibilityState } from "@tanstack/react-table";
 
 import { categoryFormSchema } from "./CategoryForm";
 
-export function useCategories() {
+export function useTableState(includeDeleted = false) {
   const [data, setData] = useState<Category[]>([]);
   const [tableLoading, setTableLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [includeDeleted, setIncludeDeleted] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [deleteMode, setDeleteMode] = useState<"soft" | "hard" | "restore">(
-    "soft"
-  );
-  const [openSheet, setOpenSheet] = useState(false);
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  const [isDataLoading, setIsDataLoading] = useState(false);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     deletedAt: includeDeleted,
   });
+
+  return {
+    data,
+    setData,
+    tableLoading,
+    setTableLoading,
+    columnVisibility,
+    setColumnVisibility,
+  };
+}
+
+export function useFormState(category: Category) {
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [openSheet, setOpenSheet] = useState(false);
+  const [isDataLoading, setIsDataLoading] = useState(false);
+
+  const form = useForm<z.infer<typeof categoryFormSchema>>({
+    resolver: zodResolver(categoryFormSchema),
+    defaultValues: {
+      name: category.name,
+      description: category.description,
+    },
+  });
+
+  return {
+    isEditMode,
+    setIsEditMode,
+    openSheet,
+    setOpenSheet,
+    isDataLoading,
+    setIsDataLoading,
+    form,
+  };
+}
+
+export function useDeleteState() {
+  const [deleteMode, setDeleteMode] = useState<"soft" | "hard" | "restore">(
+    "soft"
+  );
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [alertMessage, setAlertMessage] = useState({
+    title: "",
+    description: "",
+  });
+
+  return {
+    deleteMode,
+    setDeleteMode,
+    openConfirmDialog,
+    setOpenConfirmDialog,
+    selectedCategoryId,
+    setSelectedCategoryId,
+    alertMessage,
+    setAlertMessage,
+  };
+}
+
+export function useCategories() {
+  const [error, setError] = useState<string | null>(null);
+  const [includeDeleted, setIncludeDeleted] = useState(false);
   const [category, setCategory] = useState<Category>({
     id: "",
     name: "",
@@ -34,22 +86,21 @@ export function useCategories() {
     updatedAt: new Date(),
     deletedAt: null,
   });
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
-  const [alertMessage, setAlertMessage] = useState({
-    title: "",
-    description: "",
-  });
+
+  const tableState = useTableState(includeDeleted);
+  const formState = useFormState(category);
+  const deleteState = useDeleteState();
 
   const fetchCategories = async (includeDeleted = false) => {
     try {
-      setTableLoading(true);
+      tableState.setTableLoading(true);
       const response = await categoriesService.getAll(includeDeleted);
-      setData(response.data);
+      tableState.setData(response.data);
     } catch (err) {
       setError("Failed to fetch categories");
       console.error(err);
     } finally {
-      setTableLoading(false);
+      tableState.setTableLoading(false);
     }
   };
 
@@ -63,61 +114,65 @@ export function useCategories() {
       updatedAt: new Date(),
       deletedAt: null,
     });
-    setIsEditMode(false);
-    setOpenSheet(true);
+    formState.setIsEditMode(false);
+    formState.setOpenSheet(true);
   };
 
   const handleUpdate = (category: Category) => {
     setCategory(category);
-    setIsEditMode(true);
-    setOpenSheet(true);
+    formState.setIsEditMode(true);
+    formState.setOpenSheet(true);
   };
 
   const handleSoftDelete = async (categoryId: string) => {
-    setAlertMessage({
+    deleteState.setAlertMessage({
       title: "Trash it?",
       description: "Wanna trash it? You can dig it back later.",
     });
-    setSelectedCategoryId(categoryId);
-    setDeleteMode("soft");
-    setOpenConfirmDialog(true);
+    deleteState.setSelectedCategoryId(categoryId);
+    deleteState.setDeleteMode("soft");
+    deleteState.setOpenConfirmDialog(true);
   };
 
   const handleHardDelete = async (categoryId: string) => {
-    setAlertMessage({
+    deleteState.setAlertMessage({
       title: "Flatline this?",
       description: "You're reaching the point of no return.",
     });
-    setSelectedCategoryId(categoryId);
-    setDeleteMode("hard");
-    setOpenConfirmDialog(true);
+    deleteState.setSelectedCategoryId(categoryId);
+    deleteState.setDeleteMode("hard");
+    deleteState.setOpenConfirmDialog(true);
   };
 
   const handleRestore = async (categoryId: string) => {
-    setAlertMessage({
+    deleteState.setAlertMessage({
       title: "Revive it?",
       description: "Bring it back to life?",
     });
-    setSelectedCategoryId(categoryId);
-    setDeleteMode("restore");
-    setOpenConfirmDialog(true);
+    deleteState.setSelectedCategoryId(categoryId);
+    deleteState.setDeleteMode("restore");
+    deleteState.setOpenConfirmDialog(true);
   };
 
-  const handleConfirmOperation = async () => {
+  const handleConfirmDelOperation = async () => {
     try {
-      setIsDataLoading(true);
+      formState.setIsDataLoading(true);
 
       let promise;
 
-      switch (deleteMode) {
+      switch (deleteState.deleteMode) {
         case "soft":
-          promise = categoriesService.softDelete(selectedCategoryId);
+          promise = categoriesService.softDelete(
+            deleteState.selectedCategoryId
+          );
           break;
         case "hard":
-          promise = categoriesService.hardDelete(selectedCategoryId);
+          promise = categoriesService.hardDelete(
+            deleteState.selectedCategoryId
+          );
           break;
         case "restore":
-          promise = categoriesService.restore(selectedCategoryId);
+          promise = categoriesService.restore(deleteState.selectedCategoryId);
           break;
       }
 
@@ -125,23 +180,23 @@ export function useCategories() {
 
       toast.promise(promise, {
         loading: `${
-          deleteMode === "restore"
+          deleteState.deleteMode === "restore"
             ? "Restoring"
-            : deleteMode === "hard"
+            : deleteState.deleteMode === "hard"
             ? "Deleting"
             : "Trashing"
         } category...`,
         success: `Category ${
-          deleteMode === "restore"
+          deleteState.deleteMode === "restore"
             ? "restored"
-            : deleteMode === "hard"
+            : deleteState.deleteMode === "hard"
             ? "deleted"
             : "trashed"
         } successfully`,
         error: `Failed to ${
-          deleteMode === "restore"
+          deleteState.deleteMode === "restore"
             ? "restore"
-            : deleteMode === "hard"
+            : deleteState.deleteMode === "hard"
             ? "delete"
             : "trash"
         } category`,
@@ -152,73 +207,58 @@ export function useCategories() {
       console.error("Operation failed:", error);
       toast.error("Operation failed");
     } finally {
-      setOpenConfirmDialog(false);
-      setIsDataLoading(false);
+      deleteState.setOpenConfirmDialog(false);
+      formState.setIsDataLoading(false);
     }
   };
 
   async function onSubmit(values: z.infer<typeof categoryFormSchema>) {
     try {
-      setIsDataLoading(true);
+      formState.setIsDataLoading(true);
 
-      const promise = isEditMode
+      const promise = formState.isEditMode
         ? categoriesService.update(category.id, values)
         : categoriesService.create(values);
 
       await promise;
 
       toast.promise(promise, {
-        loading: isEditMode ? "Updating category..." : "Creating category...",
-        success: isEditMode
+        loading: formState.isEditMode
+          ? "Updating category..."
+          : "Creating category...",
+        success: formState.isEditMode
           ? "Category updated successfully"
           : "Category created successfully",
-        error: isEditMode
+        error: formState.isEditMode
           ? "Failed to update category"
           : "Failed to create category",
       });
 
       await fetchCategories(includeDeleted);
-      setOpenSheet(false);
+      formState.setOpenSheet(false);
     } catch (error) {
       console.error("Failed to update category:", error);
     } finally {
-      setIsDataLoading(false);
+      formState.setIsDataLoading(false);
     }
   }
 
-  const form = useForm<z.infer<typeof categoryFormSchema>>({
-    resolver: zodResolver(categoryFormSchema),
-    defaultValues: {
-      name: category.name,
-      description: category.description,
-    },
-  });
-
   return {
-    data,
-    tableLoading,
+    ...tableState,
+    ...formState,
+    ...deleteState,
     error,
     includeDeleted,
     setIncludeDeleted,
-    isEditMode,
-    deleteMode,
-    openSheet,
-    setOpenSheet,
-    openConfirmDialog,
-    setOpenConfirmDialog,
-    isDataLoading,
-    columnVisibility,
-    setColumnVisibility,
     category,
-    form,
+    setCategory,
     handleCreate,
     handleUpdate,
     handleSoftDelete,
     handleHardDelete,
     handleRestore,
-    handleConfirmOperation,
+    handleConfirmOperation: handleConfirmDelOperation,
     onSubmit,
-    alertMessage,
     fetchCategories,
   };
 }
