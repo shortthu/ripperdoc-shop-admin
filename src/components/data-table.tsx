@@ -2,7 +2,9 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  OnChangeFn,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -19,17 +21,23 @@ interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   loading?: boolean;
+  columnVisibility: VisibilityState;
+  setColumnVisibility: OnChangeFn<VisibilityState>;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   loading,
+  columnVisibility,
+  setColumnVisibility,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    state: { columnVisibility },
+    onColumnVisibilityChange: setColumnVisibility,
   });
 
   return (
@@ -54,7 +62,13 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24">
+                <Loader2 className="animate-spin" />
+              </TableCell>
+            </TableRow>
+          ) : table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -67,12 +81,6 @@ export function DataTable<TData, TValue>({
                 ))}
               </TableRow>
             ))
-          ) : loading ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24">
-                <Loader2 className="animate-spin" />
-              </TableCell>
-            </TableRow>
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

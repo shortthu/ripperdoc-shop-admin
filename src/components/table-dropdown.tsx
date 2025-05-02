@@ -44,7 +44,7 @@ export function TableDropdown<T extends TableRecord>({
 
         {!isSoftDeleted && (
           <>
-            <DropdownMenuItem onClick={actions.onUpdate}>
+            <DropdownMenuItem id="update" onClick={actions.onUpdate}>
               Update
             </DropdownMenuItem>
             <DropdownMenuSeparator />
