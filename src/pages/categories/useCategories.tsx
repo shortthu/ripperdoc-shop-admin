@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -244,21 +244,25 @@ export function useCategories() {
   }
 
   return {
-    ...tableState,
-    ...formState,
-    ...deleteState,
-    error,
-    includeDeleted,
-    setIncludeDeleted,
-    category,
-    setCategory,
-    handleCreate,
-    handleUpdate,
-    handleSoftDelete,
-    handleHardDelete,
-    handleRestore,
-    handleConfirmOperation: handleConfirmDelOperation,
-    onSubmit,
-    fetchCategories,
+    state: {
+      table: tableState,
+      form: formState,
+      delete: deleteState,
+      error,
+      includeDeleted,
+      category,
+    },
+    actions: {
+      setIncludeDeleted,
+      setCategory,
+      handleCreate,
+      handleUpdate,
+      handleSoftDelete,
+      handleHardDelete,
+      handleRestore,
+      handleConfirmDelOperation,
+      onSubmit,
+      fetchCategories,
+    },
   };
 }

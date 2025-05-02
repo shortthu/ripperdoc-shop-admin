@@ -14,32 +14,8 @@ import { columns } from "./tableColumns";
 import { useCategories } from "./useCategories";
 
 export default function Categories() {
-  const {
-    data,
-    tableLoading,
-    error,
-    includeDeleted,
-    setIncludeDeleted,
-    openSheet,
-    setOpenSheet,
-    openConfirmDialog,
-    setOpenConfirmDialog,
-    isDataLoading,
-    columnVisibility,
-    setColumnVisibility,
-    isEditMode,
-    form,
-    handleCreate,
-    handleUpdate,
-    handleSoftDelete,
-    handleHardDelete,
-    handleRestore,
-    handleConfirmOperation,
-    onSubmit,
-    fetchCategories,
-    category,
-    alertMessage,
-  } = useCategories();
+  const { state, actions } = useCategories();
+  const { table, form, delete: deleteState, error } = state;
 
   if (error) {
     return (
@@ -50,36 +26,40 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    fetchCategories(includeDeleted);
+    actions.fetchCategories(state.includeDeleted);
 
-    setColumnVisibility((prev) => ({
+    table.setColumnVisibility((prev) => ({
       ...prev,
-      deletedAt: includeDeleted,
+      deletedAt: state.includeDeleted,
     }));
-  }, [includeDeleted]);
+  }, [state.includeDeleted]);
 
   useEffect(() => {
-    if (category) {
-      form.reset({
-        name: category.name,
-        description: category.description,
+    if (state.category) {
+      form.form.reset({
+        name: state.category.name,
+        description: state.category.description,
       });
     }
-  }, [category, form]);
+  }, [state.category, form.form]);
 
   return (
     <div className="container mx-auto flex flex-col gap-4">
       <div className="flex flex-row-reverse gap-4">
-        <Button id="create" onClick={handleCreate} disabled={tableLoading}>
+        <Button
+          id="create"
+          onClick={actions.handleCreate}
+          disabled={table.tableLoading}
+        >
           Create
         </Button>
         <div className="flex items-center space-x-2">
           <Switch
             id="include-deleted"
-            disabled={tableLoading}
+            disabled={table.tableLoading}
             onCheckedChange={(checked) => {
-              if (checked) setIncludeDeleted(true);
-              else setIncludeDeleted(false);
+              if (checked) actions.setIncludeDeleted(true);
+              else actions.setIncludeDeleted(false);
             }}
           />
           <Label htmlFor="include-deleted">Include deleted</Label>
@@ -88,36 +68,36 @@ export default function Categories() {
 
       <DataTable
         columns={columns({
-          onUpdate: handleUpdate,
-          onSoftDelete: handleSoftDelete,
-          onHardDelete: handleHardDelete,
-          onRestore: handleRestore,
+          onUpdate: actions.handleUpdate,
+          onSoftDelete: actions.handleSoftDelete,
+          onHardDelete: actions.handleHardDelete,
+          onRestore: actions.handleRestore,
         })}
-        data={data}
-        loading={tableLoading}
-        columnVisibility={columnVisibility}
-        setColumnVisibility={setColumnVisibility}
+        data={table.data}
+        loading={table.tableLoading}
+        columnVisibility={table.columnVisibility}
+        setColumnVisibility={table.setColumnVisibility}
       />
 
-      <InfoUpdateSheet open={openSheet} onOpenChange={setOpenSheet}>
+      <InfoUpdateSheet open={form.openSheet} onOpenChange={form.setOpenSheet}>
         <SheetTitle>
-          {isEditMode ? "Update Category" : "Create Category"}
+          {form.isEditMode ? "Update Category" : "Create Category"}
         </SheetTitle>
         <CategoryForm
-          form={form}
-          onSubmit={onSubmit}
-          onCancel={() => setOpenSheet(false)}
-          isLoading={isDataLoading}
+          form={form.form}
+          onSubmit={actions.onSubmit}
+          onCancel={() => form.setOpenSheet(false)}
+          isLoading={form.isDataLoading}
         />
       </InfoUpdateSheet>
 
       <ConfirmationDialog
-        open={openConfirmDialog}
-        onOpenChange={setOpenConfirmDialog}
-        title={alertMessage.title}
-        description={alertMessage.description}
-        onConfirm={handleConfirmOperation}
-        isLoading={isDataLoading}
+        open={deleteState.openConfirmDialog}
+        onOpenChange={deleteState.setOpenConfirmDialog}
+        title={deleteState.alertMessage.title}
+        description={deleteState.alertMessage.description}
+        onConfirm={actions.handleConfirmDelOperation}
+        isLoading={form.isDataLoading}
       ></ConfirmationDialog>
     </div>
   );
