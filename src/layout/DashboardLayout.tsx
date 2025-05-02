@@ -29,6 +29,18 @@ export default function DashboardLayout() {
 
   if (!user) return <Navigate to={APP_ROUTES.login.url} />;
 
+  if (!user.roles.includes("Admin")) {
+    logout();
+
+    return (
+      <Navigate
+        to={APP_ROUTES.login.url}
+        // state={{ from: location.pathname }}
+        replace
+      />
+    );
+  }
+
   return (
     <SidebarProvider>
       <AppSidebar
