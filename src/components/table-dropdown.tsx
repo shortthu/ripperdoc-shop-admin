@@ -53,13 +53,13 @@ export function TableDropdown<T extends TableRecord>({
                 onClick={actions.onSoftDelete}
                 className="text-red-600 dark:text-red-400"
               >
-                Soft delete
+                Move to trash
               </DropdownMenuItem>
             )}
           </>
         )}
 
-        {actions.onHardDelete && (
+        {isSoftDeleted && actions.onHardDelete && (
           <DropdownMenuItem
             onClick={actions.onHardDelete}
             className="text-red-600 dark:text-red-400"
