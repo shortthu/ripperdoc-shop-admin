@@ -30,6 +30,8 @@ import {
   VisibilityState,
 } from "@tanstack/react-table";
 
+import { DataTablePagination } from "./data-table-pagination";
+
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
   column: Column<TData, TValue>;
@@ -162,6 +164,10 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
+
+      <div className="container py-2">
+        <DataTablePagination table={table} />
+      </div>
     </div>
   );
 }

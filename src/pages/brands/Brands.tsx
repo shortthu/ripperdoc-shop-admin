@@ -15,6 +15,8 @@ import { BrandForm } from "./BrandForm";
 import { columns } from "./brandsTableColumns";
 import { useBrands } from "./useBrands";
 
+import { DataTablePagination } from "@/components/data-table-pagination";
+
 export default function Brands() {
   const { state, actions } = useBrands();
   const { table, form, delete: deleteState, error } = state;
