@@ -16,21 +16,30 @@ export const categoriesService = {
     });
   },
   create: (category: CategoryDTO) => {
-    return axiosInstance.post(API_ROUTES.categories.base, category);
+    return axiosInstance.post<Category>(API_ROUTES.categories.base, category);
   },
   getById: (categoryId: string) => {
-    return axiosInstance.get(API_ROUTES.categories.byId(categoryId));
+    return axiosInstance.get<Category>(API_ROUTES.categories.byId(categoryId));
   },
   update: (categoryId: string, category: CategoryDTO) => {
-    return axiosInstance.put(API_ROUTES.categories.byId(categoryId), category);
+    return axiosInstance.put<Category>(
+      API_ROUTES.categories.byId(categoryId),
+      category
+    );
   },
   softDelete: (categoryId: string) => {
-    return axiosInstance.delete(API_ROUTES.categories.byId(categoryId));
+    return axiosInstance.delete<Category>(
+      API_ROUTES.categories.byId(categoryId)
+    );
   },
   hardDelete: (categoryId: string) => {
-    return axiosInstance.delete(API_ROUTES.categories.hardDelete(categoryId));
+    return axiosInstance.delete<Category>(
+      API_ROUTES.categories.hardDelete(categoryId)
+    );
   },
   restore: (categoryId: string) => {
-    return axiosInstance.post(API_ROUTES.categories.restore(categoryId));
+    return axiosInstance.post<Category>(
+      API_ROUTES.categories.restore(categoryId)
+    );
   },
 };

@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
 import { API_ROUTES } from "@/lib/routes";
+import { Product } from "@/types/product";
 
 export interface ProductDTO {
   name: string;
@@ -13,7 +14,7 @@ export interface ProductDTO {
 
 export const productsService = {
   getAll: (includeDeleted = false, page?: number, pageSize?: number) => {
-    return axiosInstance.get(API_ROUTES.products.base, {
+    return axiosInstance.get<Product[]>(API_ROUTES.products.base, {
       params: {
         includeDeleted,
         page,
@@ -22,27 +23,34 @@ export const productsService = {
     });
   },
   create: (product: ProductDTO) => {
-    return axiosInstance.post(API_ROUTES.products.base, product);
+    return axiosInstance.post<Product>(API_ROUTES.products.base, product);
   },
   getById: (productId: string) => {
-    return axiosInstance.get(API_ROUTES.products.byId(productId));
+    return axiosInstance.get<Product>(API_ROUTES.products.byId(productId));
   },
   update: (productId: string, product: ProductDTO) => {
-    return axiosInstance.put(API_ROUTES.products.byId(productId), product);
+    return axiosInstance.put<Product>(
+      API_ROUTES.products.byId(productId),
+      product
+    );
   },
   feature: (productId: string) => {
-    return axiosInstance.post(API_ROUTES.products.feature(productId));
+    return axiosInstance.post<Product>(API_ROUTES.products.feature(productId));
   },
   unfeature: (productId: string) => {
-    return axiosInstance.post(API_ROUTES.products.unfeature(productId));
+    return axiosInstance.post<Product>(
+      API_ROUTES.products.unfeature(productId)
+    );
   },
   softDelete: (productId: string) => {
-    return axiosInstance.delete(API_ROUTES.products.byId(productId));
+    return axiosInstance.delete<Product>(API_ROUTES.products.byId(productId));
   },
   hardDelete: (productId: string) => {
-    return axiosInstance.delete(API_ROUTES.products.hardDelete(productId));
+    return axiosInstance.delete<Product>(
+      API_ROUTES.products.hardDelete(productId)
+    );
   },
   restore: (productId: string) => {
-    return axiosInstance.post(API_ROUTES.products.restore(productId));
+    return axiosInstance.post<Product>(API_ROUTES.products.restore(productId));
   },
 };
