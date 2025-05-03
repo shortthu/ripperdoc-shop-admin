@@ -1,7 +1,11 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Category } from "@/types/category";
-import { formatDate } from "@/lib/utils/date";
+import { ArrowUpDown } from "lucide-react";
+
+import { DataTableColumnHeader } from "@/components/data-table";
 import { TableDropdown } from "@/components/table-dropdown";
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils/date";
+import { Category } from "@/types/category";
+import { ColumnDef } from "@tanstack/react-table";
 
 interface ColumnActions {
   onUpdate: (category: Category) => void;
@@ -9,6 +13,8 @@ interface ColumnActions {
   onHardDelete: (categoryId: string) => void;
   onRestore: (categoryId: string) => void;
 }
+
+// TODO: Sorting?
 
 export const columns = ({
   onUpdate,
@@ -18,26 +24,37 @@ export const columns = ({
 }: ColumnActions): ColumnDef<Category>[] => [
   {
     accessorKey: "name",
-    header: "Name",
+    // header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
   },
   {
     accessorKey: "slug",
-    header: "Slug",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Slug" />
+    ),
   },
   {
     accessorKey: "createdAt",
-    header: "Created At",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
     cell: ({ getValue }) => <span>{formatDate(getValue<Date>())}</span>,
   },
   {
     accessorKey: "updatedAt",
-    header: "Updated At",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
     cell: ({ getValue }) => <span>{formatDate(getValue<Date>())}</span>,
   },
   {
     id: "deletedAt",
     accessorKey: "deletedAt",
-    header: "Deleted At",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Deleted At" />
+    ),
     cell: ({ getValue }) => {
       const value = getValue<Date | null>();
       return value ? <span>{formatDate(value)}</span> : null;
