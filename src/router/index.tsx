@@ -4,7 +4,7 @@ import Products from "@/pages/Products";
 import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
 import Categories from "@/pages/categories/Categories";
-import Brands from "@/pages/Brands";
+import Brands from "@/pages/brands/Brands";
 
 import { APP_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";
 import Login from "@/pages/Login";
