@@ -40,7 +40,6 @@ export const API_ROUTES = {
   orders: { base: `${API_ROUTE_PREFIX}/orders` },
 };
 
-// TODO: more lables
 export const UI_LABELS = {
   products: "Cyberware",
   categories: "Categories",
@@ -48,8 +47,8 @@ export const UI_LABELS = {
   cart: "Loadout",
   customers: "Clients",
   orders: "Installations",
-  login: "Jack In",
-  logout: "Jack Out",
+  login: "Jack in",
+  logout: "Jack out",
 };
 
 export const APP_ROUTES = {

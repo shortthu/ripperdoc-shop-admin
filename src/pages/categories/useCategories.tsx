@@ -9,6 +9,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { VisibilityState } from "@tanstack/react-table";
 
 import { categoryFormSchema } from "./CategoryForm";
+import pluralize from "pluralize";
+import { UI_LABELS } from "@/lib/routes";
 
 export function useTableState(includeDeleted = false) {
   const [data, setData] = useState<Category[]>([]);
@@ -185,8 +187,8 @@ export function useCategories() {
             : deleteState.deleteMode === "hard"
             ? "Deleting"
             : "Trashing"
-        } category...`,
-        success: `Category ${
+        } ${pluralize.singular(UI_LABELS.categories.toLowerCase())}...`,
+        success: `${pluralize.singular(UI_LABELS.categories)} ${
           deleteState.deleteMode === "restore"
             ? "restored"
             : deleteState.deleteMode === "hard"
@@ -199,7 +201,7 @@ export function useCategories() {
             : deleteState.deleteMode === "hard"
             ? "delete"
             : "trash"
-        } category`,
+        } ${pluralize.singular(UI_LABELS.categories.toLowerCase())}`,
       });
 
       await fetchCategories(includeDeleted);
@@ -224,20 +226,31 @@ export function useCategories() {
 
       toast.promise(promise, {
         loading: formState.isEditMode
-          ? "Updating category..."
-          : "Creating category...",
+          ? `Updating ${pluralize.singular(
+              UI_LABELS.categories.toLowerCase()
+            )}...`
+          : `Creating ${pluralize.singular(
+              UI_LABELS.categories.toLowerCase()
+            )}...`,
         success: formState.isEditMode
-          ? "Category updated successfully"
-          : "Category created successfully",
+          ? `${pluralize.singular(UI_LABELS.categories)} updated successfully`
+          : `${pluralize.singular(UI_LABELS.categories)} created successfully`,
         error: formState.isEditMode
-          ? "Failed to update category"
-          : "Failed to create category",
+          ? `Failed to update ${pluralize.singular(
+              UI_LABELS.categories.toLowerCase()
+            )}`
+          : `Failed to create ${pluralize.singular(
+              UI_LABELS.categories.toLowerCase()
+            )}`,
       });
 
       await fetchCategories(includeDeleted);
       formState.setOpenSheet(false);
     } catch (error) {
-      console.error("Failed to update category:", error);
+      console.error(
+        `Failed to update ${pluralize.singular(UI_LABELS.categories)}:`,
+        error
+      );
     } finally {
       formState.setIsDataLoading(false);
     }

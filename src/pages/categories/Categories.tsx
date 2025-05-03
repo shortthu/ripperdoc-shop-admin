@@ -10,8 +10,10 @@ import { SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
 
 import { CategoryForm } from "./CategoryForm";
-import { columns } from "./tableColumns";
+import { columns } from "./categoriesTableColumns";
 import { useCategories } from "./useCategories";
+import { UI_LABELS } from "@/lib/routes";
+import pluralize from "pluralize";
 
 export default function Categories() {
   const { state, actions } = useCategories();
@@ -81,7 +83,9 @@ export default function Categories() {
 
       <InfoUpdateSheet open={form.openSheet} onOpenChange={form.setOpenSheet}>
         <SheetTitle>
-          {form.isEditMode ? "Update Category" : "Create Category"}
+          {form.isEditMode
+            ? `Update ${pluralize.singular(UI_LABELS.categories)}`
+            : `Create ${pluralize.singular(UI_LABELS.categories)}`}
         </SheetTitle>
         <CategoryForm
           form={form.form}

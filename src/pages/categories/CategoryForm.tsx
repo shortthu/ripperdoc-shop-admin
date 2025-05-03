@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { UI_LABELS } from "@/lib/routes";
+import pluralize from "pluralize";
 
 export const categoryFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -40,7 +42,12 @@ export function CategoryForm({
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input placeholder="Category name" {...field} />
+                <Input
+                  placeholder={`${pluralize.singular(
+                    UI_LABELS.categories
+                  )} name`}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -54,7 +61,9 @@ export function CategoryForm({
               <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Category description"
+                  placeholder={`${pluralize.singular(
+                    UI_LABELS.categories
+                  )} description`}
                   className="resize-none"
                   {...field}
                 />

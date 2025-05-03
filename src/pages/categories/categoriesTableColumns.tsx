@@ -1,8 +1,5 @@
-import { ArrowUpDown } from "lucide-react";
-
 import { DataTableColumnHeader } from "@/components/data-table";
 import { TableDropdown } from "@/components/table-dropdown";
-import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils/date";
 import { Category } from "@/types/category";
 import { ColumnDef } from "@tanstack/react-table";
@@ -13,8 +10,6 @@ interface ColumnActions {
   onHardDelete: (categoryId: string) => void;
   onRestore: (categoryId: string) => void;
 }
-
-// TODO: Sorting?
 
 export const columns = ({
   onUpdate,
