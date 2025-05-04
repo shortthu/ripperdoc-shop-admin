@@ -30,7 +30,7 @@ export const API_ROUTES = {
     hardDelete: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/hard`,
     restore: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/restore`,
   },
-  customers: { base: `${API_ROUTE_PREFIX}/customers` },
+  users: { base: `${API_ROUTE_PREFIX}/users` },
   auth: {
     login: `/api/auth/login`,
     logout: `/api/auth/logout`,
