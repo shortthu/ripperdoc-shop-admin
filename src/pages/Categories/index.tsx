@@ -19,21 +19,15 @@ export default function Categories() {
   const { state, actions } = useCategories();
   const { table, form, delete: deleteState, error } = state;
 
-  if (error) {
-    return (
-      <Alert variant="destructive">
-        <AlertDescription>{error}</AlertDescription>
-      </Alert>
-    );
-  }
-
   useEffect(() => {
     actions.fetchCategories(
       state.includeDeleted,
       state.table.pageIndex + 1,
       state.table.pageSize
     );
+  }, [state.includeDeleted, state.table.pageIndex, state.table.pageSize]);
 
+  useEffect(() => {
     table.setColumnVisibility((prev) => ({
       ...prev,
       deletedAt: state.includeDeleted,
@@ -48,6 +42,14 @@ export default function Categories() {
       });
     }
   }, [state.category, form.form]);
+
+  if (error) {
+    return (
+      <Alert variant="destructive">
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="container mx-auto flex flex-col gap-4">

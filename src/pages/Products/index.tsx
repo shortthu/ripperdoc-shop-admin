@@ -25,12 +25,14 @@ export default function Products() {
       state.table.pageIndex + 1,
       state.table.pageSize
     );
+  }, [state.includeDeleted, state.table.pageIndex, state.table.pageSize]);
 
+  useEffect(() => {
     table.setColumnVisibility((prev) => ({
       ...prev,
       deletedAt: state.includeDeleted,
     }));
-  }, [state.includeDeleted, state.table.pageIndex, state.table.pageSize]);
+  }, [state.includeDeleted]);
 
   useEffect(() => {
     if (state.product) {
