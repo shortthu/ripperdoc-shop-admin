@@ -30,11 +30,16 @@ export const API_ROUTES = {
     hardDelete: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/hard`,
     restore: (id: string) => `${API_ROUTE_PREFIX}/brands/${id}/restore`,
   },
-  users: { base: `${API_ROUTE_PREFIX}/users` },
+  customers: { base: `${API_ROUTE_PREFIX}/customers` },
   auth: {
     login: `/api/auth/login`,
     logout: `/api/auth/logout`,
     whoami: `/api/auth/whoami`,
+  },
+  images: {
+    base: `${API_ROUTE_PREFIX}/images`,
+    // byId: (id: string) => `${API_ROUTE_PREFIX}/images/${id}`,
+    upload: `${API_ROUTE_PREFIX}/images/upload`,
   },
   // Optional realm
   orders: { base: `${API_ROUTE_PREFIX}/orders` },
