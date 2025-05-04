@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { productsService } from "@/services/productsService";
+import { ProductDTO, productsService } from "@/services/productsService";
 import { Product } from "@/types/product";
 import { Category } from "@/types/category";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,8 +42,6 @@ export function useTableState(includeDeleted = false) {
   };
 }
 
-// TODO : Fix form
-
 export function useFormState(product: Product) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [openSheet, setOpenSheet] = useState(false);
@@ -54,8 +52,15 @@ export function useFormState(product: Product) {
     defaultValues: {
       name: product.name,
       description: product.description,
+      imageUrl: product.imageUrl,
+      price: product.price,
+      isFeatured: product.isFeatured,
+      categoryId: product.category.id,
+      brandId: product.brand?.id,
     },
   });
+
+  console.log(form);
 
   return {
     isEditMode,
@@ -254,7 +259,7 @@ export function useProducts() {
       formState.setIsDataLoading(true);
 
       const promise = formState.isEditMode
-        ? productsService.update(product.id, values)
+        ? productsService.update(product.id!, values)
         : productsService.create(values);
 
       await promise;

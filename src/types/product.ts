@@ -14,6 +14,6 @@ export type Product = {
   deletedAt: Date | null;
   categoryId: string;
   category: Category;
-  brandId?: string | null;
-  brand?: Brand | null;
+  brandId: string | null;
+  brand: Brand | null;
 };

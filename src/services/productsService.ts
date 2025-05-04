@@ -4,13 +4,14 @@ import { PaginatedResponse } from "@/types/paginatedResponse";
 import { Product } from "@/types/product";
 
 export interface ProductDTO {
+  id?: string;
   name: string;
   description: string;
   imageUrl: string;
   price: number;
   isFeatured: boolean;
   categoryId: string;
-  brandId: string;
+  brandId: string | null;
 }
 
 interface ProductResponse extends PaginatedResponse<Product> {
@@ -28,13 +29,13 @@ export const productsService = {
     });
   },
   create: (product: ProductDTO) => {
-    return axiosInstance.post<Product>(API_ROUTES.products.base, product);
+    return axiosInstance.post<ProductDTO>(API_ROUTES.products.base, product);
   },
   getById: (productId: string) => {
     return axiosInstance.get<Product>(API_ROUTES.products.byId(productId));
   },
   update: (productId: string, product: ProductDTO) => {
-    return axiosInstance.put<Product>(
+    return axiosInstance.put<ProductDTO>(
       API_ROUTES.products.byId(productId),
       product
     );

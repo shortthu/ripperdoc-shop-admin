@@ -39,6 +39,11 @@ export default function Products() {
       form.form.reset({
         name: state.product.name,
         description: state.product.description,
+        imageUrl: state.product.imageUrl,
+        price: state.product.price,
+        isFeatured: state.product.isFeatured,
+        categoryId: state.product.category.id,
+        brandId: state.product.brand?.id ?? null,
       });
     }
   }, [state.product, form.form]);
