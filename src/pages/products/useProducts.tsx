@@ -3,17 +3,18 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { brandsService } from "@/services/brandsService";
-import { Brand } from "@/types/brand";
+import { productsService } from "@/services/productsService";
+import { Product } from "@/types/product";
+import { Category } from "@/types/category";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { VisibilityState } from "@tanstack/react-table";
 import { UI_LABELS } from "@/lib/routes";
 
-import { brandFormSchema } from "./BrandForm";
+import { productFormSchema } from "./ProductForm";
 import pluralize from "pluralize";
 
 export function useTableState(includeDeleted = false) {
-  const [data, setData] = useState<Brand[]>([]);
+  const [data, setData] = useState<Product[]>([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     deletedAt: includeDeleted,
@@ -41,16 +42,18 @@ export function useTableState(includeDeleted = false) {
   };
 }
 
-export function useFormState(brand: Brand) {
+// TODO : Fix form
+
+export function useFormState(product: Product) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [openSheet, setOpenSheet] = useState(false);
   const [isDataLoading, setIsDataLoading] = useState(false);
 
-  const form = useForm<z.infer<typeof brandFormSchema>>({
-    resolver: zodResolver(brandFormSchema),
+  const form = useForm<z.infer<typeof productFormSchema>>({
+    resolver: zodResolver(productFormSchema),
     defaultValues: {
-      name: brand.name,
-      description: brand.description,
+      name: product.name,
+      description: product.description,
     },
   });
 
@@ -70,7 +73,7 @@ export function useDeleteState() {
     "soft"
   );
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  const [selectedBrandId, setSelectedBrandId] = useState<string>("");
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
   const [alertMessage, setAlertMessage] = useState({
     title: "",
     description: "",
@@ -81,47 +84,54 @@ export function useDeleteState() {
     setDeleteMode,
     openConfirmDialog,
     setOpenConfirmDialog,
-    selectedBrandId,
-    setSelectedBrandId,
+    selectedProductId,
+    setSelectedProductId,
     alertMessage,
     setAlertMessage,
   };
 }
 
-export function useBrands() {
+export function useProducts() {
   const [error, setError] = useState<string | null>(null);
   const [includeDeleted, setIncludeDeleted] = useState(false);
-  const [brand, setBrand] = useState<Brand>({
+  const [product, setProduct] = useState<Product>({
     id: "",
     name: "",
     slug: "",
     description: "",
+    imageUrl: "",
+    price: 0,
+    isFeatured: false,
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
+    categoryId: "",
+    category: {} as Category,
+    brandId: null,
+    brand: null,
   });
 
   const tableState = useTableState(includeDeleted);
-  const formState = useFormState(brand);
+  const formState = useFormState(product);
   const deleteState = useDeleteState();
 
-  const fetchBrands = async (
+  const fetchProducts = async (
     includeDeleted = false,
     page = 1,
     pageSize = 10
   ) => {
     try {
       tableState.setTableLoading(true);
-      const response = await brandsService.getAll(
+      const response = await productsService.getAll(
         includeDeleted,
         page,
         pageSize
       );
-      tableState.setData(response.data.brands);
+      tableState.setData(response.data.products);
       tableState.setTotalCount(response.data.totalCount);
       tableState.setPageCount(response.data.totalPages);
     } catch (err) {
-      setError(`Failed to fetch ${UI_LABELS.brands.toLowerCase()}`);
+      setError(`Failed to fetch ${UI_LABELS.products.toLowerCase()}`);
       console.error(err);
     } finally {
       tableState.setTableLoading(false);
@@ -129,51 +139,58 @@ export function useBrands() {
   };
 
   const handleCreate = () => {
-    setBrand({
+    setProduct({
       id: "",
       name: "",
       slug: "",
       description: "",
+      imageUrl: "",
+      price: 0,
+      isFeatured: false,
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
+      categoryId: "",
+      category: {} as Category,
+      brandId: null,
+      brand: null,
     });
     formState.setIsEditMode(false);
     formState.setOpenSheet(true);
   };
 
-  const handleUpdate = (brand: Brand) => {
-    setBrand(brand);
+  const handleUpdate = (product: Product) => {
+    setProduct(product);
     formState.setIsEditMode(true);
     formState.setOpenSheet(true);
   };
 
-  const handleSoftDelete = async (brandId: string) => {
+  const handleSoftDelete = async (productId: string) => {
     deleteState.setAlertMessage({
       title: "Trash it?",
       description: "Wanna trash it? You can dig it back later.",
     });
-    deleteState.setSelectedBrandId(brandId);
+    deleteState.setSelectedProductId(productId);
     deleteState.setDeleteMode("soft");
     deleteState.setOpenConfirmDialog(true);
   };
 
-  const handleHardDelete = async (brandId: string) => {
+  const handleHardDelete = async (productID: string) => {
     deleteState.setAlertMessage({
       title: "Flatline this?",
       description: "You're reaching the point of no return.",
     });
-    deleteState.setSelectedBrandId(brandId);
+    deleteState.setSelectedProductId(productID);
     deleteState.setDeleteMode("hard");
     deleteState.setOpenConfirmDialog(true);
   };
 
-  const handleRestore = async (brandId: string) => {
+  const handleRestore = async (productId: string) => {
     deleteState.setAlertMessage({
       title: "Revive it?",
       description: "Bring it back to life?",
     });
-    deleteState.setSelectedBrandId(brandId);
+    deleteState.setSelectedProductId(productId);
     deleteState.setDeleteMode("restore");
     deleteState.setOpenConfirmDialog(true);
   };
@@ -186,13 +203,13 @@ export function useBrands() {
 
       switch (deleteState.deleteMode) {
         case "soft":
-          promise = brandsService.softDelete(deleteState.selectedBrandId);
+          promise = productsService.softDelete(deleteState.selectedProductId);
           break;
         case "hard":
-          promise = brandsService.hardDelete(deleteState.selectedBrandId);
+          promise = productsService.hardDelete(deleteState.selectedProductId);
           break;
         case "restore":
-          promise = brandsService.restore(deleteState.selectedBrandId);
+          promise = productsService.restore(deleteState.selectedProductId);
           break;
       }
 
@@ -205,8 +222,8 @@ export function useBrands() {
             : deleteState.deleteMode === "hard"
             ? "Deleting"
             : "Trashing"
-        } ${pluralize.singular(UI_LABELS.brands.toLowerCase())}...`,
-        success: `${pluralize.singular(UI_LABELS.brands)} ${
+        } ${pluralize.singular(UI_LABELS.products.toLowerCase())}...`,
+        success: `${pluralize.singular(UI_LABELS.products)} ${
           deleteState.deleteMode === "restore"
             ? "restored"
             : deleteState.deleteMode === "hard"
@@ -219,10 +236,10 @@ export function useBrands() {
             : deleteState.deleteMode === "hard"
             ? "delete"
             : "trash"
-        } ${pluralize.singular(UI_LABELS.brands.toLowerCase())}`,
+        } ${pluralize.singular(UI_LABELS.products.toLowerCase())}`,
       });
 
-      await fetchBrands(includeDeleted);
+      await fetchProducts(includeDeleted);
     } catch (error) {
       console.error("Operation failed:", error);
       toast.error("Operation failed");
@@ -232,37 +249,41 @@ export function useBrands() {
     }
   };
 
-  async function onSubmit(values: z.infer<typeof brandFormSchema>) {
+  async function onSubmit(values: z.infer<typeof productFormSchema>) {
     try {
       formState.setIsDataLoading(true);
 
       const promise = formState.isEditMode
-        ? brandsService.update(brand.id, values)
-        : brandsService.create(values);
+        ? productsService.update(product.id, values)
+        : productsService.create(values);
 
       await promise;
 
       toast.promise(promise, {
         loading: formState.isEditMode
-          ? `Updating ${pluralize.singular(UI_LABELS.brands.toLowerCase())}...`
-          : `Creating ${pluralize.singular(UI_LABELS.brands.toLowerCase())}...`,
+          ? `Updating ${pluralize.singular(
+              UI_LABELS.products.toLowerCase()
+            )}...`
+          : `Creating ${pluralize.singular(
+              UI_LABELS.products.toLowerCase()
+            )}...`,
         success: formState.isEditMode
-          ? `${pluralize.singular(UI_LABELS.brands)} updated successfully`
-          : `${pluralize.singular(UI_LABELS.brands)} created successfully`,
+          ? `${pluralize.singular(UI_LABELS.products)} updated successfully`
+          : `${pluralize.singular(UI_LABELS.products)} created successfully`,
         error: formState.isEditMode
           ? `Failed to update ${pluralize.singular(
-              UI_LABELS.brands.toLowerCase()
+              UI_LABELS.products.toLowerCase()
             )}`
           : `Failed to create ${pluralize.singular(
-              UI_LABELS.brands.toLowerCase()
+              UI_LABELS.products.toLowerCase()
             )}`,
       });
 
-      await fetchBrands(includeDeleted);
+      await fetchProducts(includeDeleted);
       formState.setOpenSheet(false);
     } catch (error) {
       console.error(
-        `Failed to update ${pluralize.singular(UI_LABELS.brands)}:`,
+        `Failed to update ${pluralize.singular(UI_LABELS.products)}:`,
         error
       );
     } finally {
@@ -277,11 +298,11 @@ export function useBrands() {
       delete: deleteState,
       error,
       includeDeleted,
-      brand,
+      product,
     },
     actions: {
       setIncludeDeleted,
-      setBrand,
+      setProduct,
       handleCreate,
       handleUpdate,
       handleSoftDelete,
@@ -289,7 +310,7 @@ export function useBrands() {
       handleRestore,
       handleConfirmDelOperation,
       onSubmit,
-      fetchBrands,
+      fetchProducts,
     },
   };
 }

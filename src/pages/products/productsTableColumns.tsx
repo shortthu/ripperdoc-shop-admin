@@ -1,0 +1,113 @@
+import { DataTableColumnHeader } from "@/components/data-table";
+import { TableDropdown } from "@/components/table-dropdown";
+
+import { formatDate } from "@/lib/utils/date";
+import { Product } from "@/types/product";
+import { ColumnDef } from "@tanstack/react-table";
+
+interface ColumnActions {
+  onUpdate: (product: Product) => void;
+  onSoftDelete: (productId: string) => void;
+  onHardDelete: (productId: string) => void;
+  onRestore: (productId: string) => void;
+}
+
+export const columns = ({
+  onUpdate,
+  onSoftDelete,
+  onHardDelete,
+  onRestore,
+}: ColumnActions): ColumnDef<Product>[] => [
+  {
+    accessorKey: "imageUrl",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Image" />
+    ),
+    // cell: ({ getValue })
+  },
+  {
+    accessorKey: "name",
+    // header: "Name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Name" />
+    ),
+  },
+  {
+    accessorKey: "slug",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Slug" />
+    ),
+  },
+  {
+    accessorKey: "price",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Price" />
+    ),
+    // cell: ({ getValue })
+  },
+  {
+    accessorKey: "isFeatured",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Featured" />
+    ),
+    // cell: ({ getValue })
+  },
+  {
+    accessorKey: "category.name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Category" />
+    ),
+  },
+  {
+    accessorKey: "brand.name",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Brand" />
+    ),
+  },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Created At" />
+    ),
+    cell: ({ getValue }) => <span>{formatDate(getValue<Date>())}</span>,
+  },
+  {
+    accessorKey: "updatedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Updated At" />
+    ),
+    cell: ({ getValue }) => <span>{formatDate(getValue<Date>())}</span>,
+  },
+  {
+    id: "deletedAt",
+    accessorKey: "deletedAt",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Deleted At" />
+    ),
+    cell: ({ getValue }) => {
+      const value = getValue<Date | null>();
+      return value ? <span>{formatDate(value)}</span> : null;
+    },
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const product = row.original;
+      return (
+        <>
+          <TableDropdown
+            record={product}
+            actions={{
+              onUpdate: () => onUpdate(product),
+              onSoftDelete: () => onSoftDelete(product.id),
+              onHardDelete: () => onHardDelete(product.id),
+              onRestore: product.deletedAt
+                ? () => onRestore(product.id)
+                : undefined,
+            }}
+          />
+        </>
+      );
+    },
+  },
+];

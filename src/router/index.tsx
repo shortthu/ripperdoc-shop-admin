@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate } from "react-router";
 import DashboardLayout from "@/layout/DashboardLayout";
-import Products from "@/pages/Products";
+import Products from "@/pages/products/Products";
 import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
 import Categories from "@/pages/categories/Categories";
