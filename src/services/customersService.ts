@@ -4,12 +4,12 @@ import { PaginatedResponse } from "@/types/paginatedResponse";
 import { Customer } from "@/types/customer";
 
 interface CustomerResponse extends PaginatedResponse<Customer> {
-  users: Customer[];
+  customers: Customer[];
 }
 
-export const customersListService = {
+export const customersService = {
   getAll: (includeDeleted = false, page?: number, pageSize?: number) => {
-    return axiosInstance.get<CustomerResponse>(API_ROUTES.users.base, {
+    return axiosInstance.get<CustomerResponse>(API_ROUTES.customers.base, {
       params: {
         includeDeleted,
         page,

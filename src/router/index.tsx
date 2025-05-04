@@ -7,7 +7,7 @@ import Categories from "@/pages/Categories";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Products from "@/pages/Products";
-import Users from "@/pages/Users";
+import Customers from "@/pages/Customers";
 
 export const router = createBrowserRouter([
   {
@@ -21,7 +21,7 @@ export const router = createBrowserRouter([
       { path: APP_ROUTES.categories.url, element: <Categories /> },
       { path: APP_ROUTES.brands.url, element: <Brands /> },
       { path: APP_ROUTES.products.url, element: <Products /> },
-      { path: APP_ROUTES.customers.url, element: <Users /> },
+      { path: APP_ROUTES.customers.url, element: <Customers /> },
       { path: APP_ROUTES.orders.url },
       { path: "me" },
     ],
