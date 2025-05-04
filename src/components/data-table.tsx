@@ -92,6 +92,11 @@ interface DataTableProps<TData, TValue> {
   loading?: boolean;
   columnVisibility: VisibilityState;
   setColumnVisibility: OnChangeFn<VisibilityState>;
+  pageIndex: number;
+  pageSize: number;
+  pageCount: number;
+  onPageChange: (pageIndex: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -100,18 +105,33 @@ export function DataTable<TData, TValue>({
   loading,
   columnVisibility,
   setColumnVisibility,
+  pageIndex,
+  pageSize,
+  pageCount,
+  onPageChange,
+  onPageSizeChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
   const table = useReactTable({
     data,
     columns,
-    state: { columnVisibility, sorting },
+    state: { columnVisibility, sorting, pagination: { pageIndex, pageSize } },
     getCoreRowModel: getCoreRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    manualPagination: true,
+    pageCount,
+    onPaginationChange: (updater) => {
+      const next =
+        typeof updater === "function"
+          ? updater({ pageIndex, pageSize })
+          : updater;
+      if (next.pageIndex !== pageIndex) onPageChange(next.pageIndex);
+      if (next.pageSize !== pageSize) onPageSizeChange(next.pageSize);
+    },
+    getPaginationRowModel: getPaginationRowModel(),
   });
 
   return (

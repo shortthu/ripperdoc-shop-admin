@@ -1,17 +1,24 @@
 import axiosInstance from "@/api/axiosInstance";
 import { API_ROUTES } from "@/lib/routes";
 import { Category } from "@/types/category";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 
 export interface CategoryDTO {
   name: string;
   description: string;
 }
 
+interface CategoryResponse extends PaginatedResponse<Category> {
+  categories: Category[];
+}
+
 export const categoriesService = {
-  getAll: (includeDeleted = false) => {
-    return axiosInstance.get<Category[]>(API_ROUTES.categories.base, {
+  getAll: (includeDeleted = false, page?: number, pageSize?: number) => {
+    return axiosInstance.get<CategoryResponse>(API_ROUTES.categories.base, {
       params: {
         includeDeleted,
+        page,
+        pageSize,
       },
     });
   },

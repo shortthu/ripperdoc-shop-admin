@@ -28,7 +28,11 @@ export default function Categories() {
   }
 
   useEffect(() => {
-    actions.fetchCategories(state.includeDeleted);
+    actions.fetchCategories(
+      state.includeDeleted,
+      state.table.pageIndex + 1,
+      state.table.pageSize
+    );
 
     table.setColumnVisibility((prev) => ({
       ...prev,
@@ -79,6 +83,11 @@ export default function Categories() {
         loading={table.tableLoading}
         columnVisibility={table.columnVisibility}
         setColumnVisibility={table.setColumnVisibility}
+        pageIndex={table.pageIndex}
+        pageSize={table.pageSize}
+        pageCount={table.pageCount}
+        onPageChange={table.setPageIndex}
+        onPageSizeChange={table.setPageSize}
       />
 
       <InfoUpdateSheet open={form.openSheet} onOpenChange={form.setOpenSheet}>

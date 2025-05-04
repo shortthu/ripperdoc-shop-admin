@@ -1,17 +1,24 @@
 import axiosInstance from "@/api/axiosInstance";
 import { API_ROUTES } from "@/lib/routes";
 import { Brand } from "@/types/brand";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 
 export interface BrandDTO {
   name: string;
   description: string;
 }
 
+interface BrandResponse extends PaginatedResponse<Brand> {
+  brands: Brand[];
+}
+
 export const brandsService = {
-  getAll: (includeDeleted = false) => {
-    return axiosInstance.get<Brand[]>(API_ROUTES.brands.base, {
+  getAll: (includeDeleted = false, page?: number, pageSize?: number) => {
+    return axiosInstance.get<BrandResponse>(API_ROUTES.brands.base, {
       params: {
         includeDeleted,
+        page,
+        pageSize,
       },
     });
   },

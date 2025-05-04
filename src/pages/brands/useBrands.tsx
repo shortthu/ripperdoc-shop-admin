@@ -18,6 +18,10 @@ export function useTableState(includeDeleted = false) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     deletedAt: includeDeleted,
   });
+  const [pageIndex, setPageIndex] = useState(0); // 0-based for TanStack Table
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
   return {
     data,
@@ -26,6 +30,14 @@ export function useTableState(includeDeleted = false) {
     setTableLoading,
     columnVisibility,
     setColumnVisibility,
+    pageIndex,
+    setPageIndex,
+    pageSize,
+    setPageSize,
+    totalCount,
+    setTotalCount,
+    pageCount,
+    setPageCount,
   };
 }
 
@@ -93,11 +105,21 @@ export function useBrands() {
   const formState = useFormState(brand);
   const deleteState = useDeleteState();
 
-  const fetchBrands = async (includeDeleted = false) => {
+  const fetchBrands = async (
+    includeDeleted = false,
+    page = 1,
+    pageSize = 10
+  ) => {
     try {
       tableState.setTableLoading(true);
-      const response = await brandsService.getAll(includeDeleted);
-      tableState.setData(response.data);
+      const response = await brandsService.getAll(
+        includeDeleted,
+        page,
+        pageSize
+      );
+      tableState.setData(response.data.brands);
+      tableState.setTotalCount(response.data.totalCount);
+      tableState.setPageCount(response.data.totalPages);
     } catch (err) {
       setError(`Failed to fetch ${UI_LABELS.brands.toLowerCase()}`);
       console.error(err);

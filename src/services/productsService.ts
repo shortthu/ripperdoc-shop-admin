@@ -1,5 +1,6 @@
 import axiosInstance from "@/api/axiosInstance";
 import { API_ROUTES } from "@/lib/routes";
+import { PaginatedResponse } from "@/types/paginatedResponse";
 import { Product } from "@/types/product";
 
 export interface ProductDTO {
@@ -12,9 +13,13 @@ export interface ProductDTO {
   brandId: string;
 }
 
+interface ProductResponse extends PaginatedResponse<Product> {
+  products: Product[];
+}
+
 export const productsService = {
   getAll: (includeDeleted = false, page?: number, pageSize?: number) => {
-    return axiosInstance.get<Product[]>(API_ROUTES.products.base, {
+    return axiosInstance.get<ProductResponse>(API_ROUTES.products.base, {
       params: {
         includeDeleted,
         page,

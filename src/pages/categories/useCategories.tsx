@@ -18,6 +18,10 @@ export function useTableState(includeDeleted = false) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     deletedAt: includeDeleted,
   });
+  const [pageIndex, setPageIndex] = useState(0); // 0-based for TanStack Table
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
   return {
     data,
@@ -26,6 +30,14 @@ export function useTableState(includeDeleted = false) {
     setTableLoading,
     columnVisibility,
     setColumnVisibility,
+    pageIndex,
+    setPageIndex,
+    pageSize,
+    setPageSize,
+    totalCount,
+    setTotalCount,
+    pageCount,
+    setPageCount,
   };
 }
 
@@ -93,11 +105,21 @@ export function useCategories() {
   const formState = useFormState(category);
   const deleteState = useDeleteState();
 
-  const fetchCategories = async (includeDeleted = false) => {
+  const fetchCategories = async (
+    includeDeleted = false,
+    page = 1,
+    pageSize = 10
+  ) => {
     try {
       tableState.setTableLoading(true);
-      const response = await categoriesService.getAll(includeDeleted);
-      tableState.setData(response.data);
+      const response = await categoriesService.getAll(
+        includeDeleted,
+        page,
+        pageSize
+      );
+      tableState.setData(response.data.categories);
+      tableState.setTotalCount(response.data.totalCount);
+      tableState.setPageCount(response.data.totalPages);
     } catch (err) {
       setError("Failed to fetch categories");
       console.error(err);

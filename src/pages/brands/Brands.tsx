@@ -15,20 +15,22 @@ import { BrandForm } from "./BrandForm";
 import { columns } from "./brandsTableColumns";
 import { useBrands } from "./useBrands";
 
-import { DataTablePagination } from "@/components/data-table-pagination";
-
 export default function Brands() {
   const { state, actions } = useBrands();
   const { table, form, delete: deleteState, error } = state;
 
   useEffect(() => {
-    actions.fetchBrands(state.includeDeleted);
+    actions.fetchBrands(
+      state.includeDeleted,
+      state.table.pageIndex + 1,
+      state.table.pageSize
+    );
 
     table.setColumnVisibility((prev) => ({
       ...prev,
       deletedAt: state.includeDeleted,
     }));
-  }, [state.includeDeleted]);
+  }, [state.includeDeleted, state.table.pageIndex, state.table.pageSize]);
 
   useEffect(() => {
     if (state.brand) {
@@ -81,6 +83,11 @@ export default function Brands() {
         loading={table.tableLoading}
         columnVisibility={table.columnVisibility}
         setColumnVisibility={table.setColumnVisibility}
+        pageIndex={table.pageIndex}
+        pageSize={table.pageSize}
+        pageCount={table.pageCount}
+        onPageChange={table.setPageIndex}
+        onPageSizeChange={table.setPageSize}
       />
 
       <InfoUpdateSheet open={form.openSheet} onOpenChange={form.setOpenSheet}>
