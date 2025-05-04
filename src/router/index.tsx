@@ -1,13 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router";
-import DashboardLayout from "@/layout/DashboardLayout";
-import Products from "@/pages/products/Products";
-import Users from "@/pages/Users";
-import NotFound from "@/pages/NotFound";
-import Categories from "@/pages/categories/Categories";
-import Brands from "@/pages/brands/Brands";
 
-import { APP_ROUTES, APP_ROUTE_PREFIX } from "@/lib/routes";
+import DashboardLayout from "@/layout/DashboardLayout";
+import { APP_ROUTE_PREFIX, APP_ROUTES } from "@/lib/routes";
+import Brands from "@/pages/Brands";
+import Categories from "@/pages/Categories";
 import Login from "@/pages/Login";
+import NotFound from "@/pages/NotFound";
+import Products from "@/pages/Products";
+import Users from "@/pages/Users";
 
 export const router = createBrowserRouter([
   {
