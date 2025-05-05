@@ -1,7 +1,9 @@
 import { Loader2 } from "lucide-react";
-import { UseFormReturn } from "react-hook-form";
-import z from "zod";
+import pluralize from "pluralize";
 import { useState } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { toast } from "sonner";
+import z from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,11 +15,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { UI_LABELS } from "@/lib/routes";
-import pluralize from "pluralize";
-import { imageService } from "@/services/imageService";
-import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -25,6 +22,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { UI_LABELS } from "@/lib/routes";
+import { brandsService } from "@/services/brandsService";
+import { categoriesService } from "@/services/categoriesService";
+import { imageService } from "@/services/imageService";
+import { Brand } from "@/types/brand";
+import { Category } from "@/types/category";
 
 export const productFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -47,23 +51,75 @@ export function ProductForm({
   onCancel: () => void;
   isLoading?: boolean;
 }) {
-  const [uploading, setUploading] = useState(false);
+  const [loadingFields, setLoadingFields] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
+
+  const fetchCategories = async (
+    includeDeleted = false,
+    page = 1,
+    pageSize = 50
+  ) => {
+    try {
+      setLoadingFields(true);
+      const response = await categoriesService.getAll(
+        includeDeleted,
+        page,
+        pageSize
+      );
+      setCategories(response.data.categories);
+    } catch (err) {
+      toast.error("Unable to fetch catagories");
+      console.error(err);
+    } finally {
+      setLoadingFields(false);
+    }
+  };
+
+  const fetchBrands = async (
+    includeDeleted = false,
+    page = 1,
+    pageSize = 50
+  ) => {
+    try {
+      setLoadingFields(true);
+      const response = await brandsService.getAll(
+        includeDeleted,
+        page,
+        pageSize
+      );
+      setBrands(response.data.brands);
+    } catch (err) {
+      toast.error("Unable to fetch brands");
+      console.error(err);
+    } finally {
+      setLoadingFields(false);
+    }
+  };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const file = e.target.files[0];
+
     const formData = new FormData();
     formData.append("image", file);
-    setUploading(true);
+
+    setLoadingFields(true);
+
     try {
       const response = await imageService.upload(formData);
-      form.setValue("imageUrl", response.data.imageUrl, {
-        shouldValidate: true,
-      });
+      form.setValue(
+        "imageUrl",
+        import.meta.env.VITE_API_URL + response.data.imageUrl,
+        {
+          shouldValidate: true,
+        }
+      );
     } catch (err) {
-      // Optionally handle error
+      console.error("Image upload failed", err);
+      toast.error("Image upload failed. Please try again");
     } finally {
-      setUploading(false);
+      setLoadingFields(false);
     }
   };
 
@@ -126,7 +182,7 @@ export function ProductForm({
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
-                    disabled={uploading || isLoading}
+                    disabled={loadingFields || isLoading}
                   />
                 </div>
               </FormControl>
@@ -158,23 +214,6 @@ export function ProductForm({
             </FormItem>
           )}
         />
-        {/* Is Featured */}
-        <FormField
-          control={form.control}
-          name="isFeatured"
-          render={({ field }) => (
-            <FormItem className="flex items-center space-x-2">
-              <FormLabel>Featured</FormLabel>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         {/* Category ID */}
         <FormField
           control={form.control}
@@ -183,8 +222,28 @@ export function ProductForm({
             <FormItem>
               <FormLabel>Category</FormLabel>
               <FormControl>
-                <Input placeholder="Category ID" {...field} />
-                {/* Replace with Select if you have categories list */}
+                <Select
+                  value={field.value}
+                  onValueChange={field.onChange}
+                  onOpenChange={(open) => open && fetchCategories()}
+                >
+                  <SelectTrigger className="w-full">
+                    {!loadingFields ? (
+                      <SelectValue placeholder="Select a category" />
+                    ) : (
+                      <Loader2 className="animate-spin" />
+                    )}
+                  </SelectTrigger>
+                  {!loadingFields && categories.length && (
+                    <SelectContent>
+                      {categories.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  )}
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -198,15 +257,35 @@ export function ProductForm({
             <FormItem>
               <FormLabel>Brand</FormLabel>
               <FormControl>
-                <Input placeholder="Brand ID (optional)" {...field} />
-                {/* Replace with Select if you have brands list */}
+                <Select
+                  value={field.value ?? undefined}
+                  onValueChange={field.onChange}
+                  onOpenChange={(open) => open && fetchBrands()}
+                >
+                  <SelectTrigger className="w-full">
+                    {!loadingFields ? (
+                      <SelectValue placeholder="Select a manufacturer" />
+                    ) : (
+                      <Loader2 className="animate-spin" />
+                    )}
+                  </SelectTrigger>
+                  {!loadingFields && brands.length && (
+                    <SelectContent>
+                      {brands.map((item) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  )}
+                </Select>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <div className="flex justify-end space-x-2">
-          {!isLoading && !uploading ? (
+          {!isLoading && !loadingFields ? (
             <>
               <Button variant="outline" onClick={onCancel}>
                 Cancel
@@ -216,7 +295,7 @@ export function ProductForm({
           ) : (
             <Button variant="outline" disabled>
               <Loader2 className="animate-spin mr-2 h-4 w-4" />
-              {uploading ? "Uploading image..." : "Saving..."}
+              {loadingFields ? "Loading fields..." : "Saving..."}
             </Button>
           )}
         </div>
