@@ -60,8 +60,6 @@ export function useFormState(product: Product) {
     },
   });
 
-  console.log(form);
-
   return {
     isEditMode,
     setIsEditMode,
@@ -110,9 +108,9 @@ export function useProducts() {
     createdAt: new Date(),
     updatedAt: new Date(),
     deletedAt: null,
-    categoryId: "",
+    // categoryId: "",
     category: {} as Category,
-    brandId: null,
+    // brandId: null,
     brand: null,
   });
 
@@ -155,9 +153,9 @@ export function useProducts() {
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
-      categoryId: "",
+      // categoryId: "",
       category: {} as Category,
-      brandId: null,
+      // brandId: null,
       brand: null,
     });
     formState.setIsEditMode(false);
@@ -296,6 +294,48 @@ export function useProducts() {
     }
   }
 
+  const handleFeature = async (productID: string) => {
+    try {
+      formState.setIsDataLoading(true);
+      const promise = productsService.feature(productID);
+
+      await promise;
+
+      toast.promise(promise, {
+        loading: "Featuring product...",
+        success: "Product featured.",
+        error: "Error featuring product.",
+      });
+
+      await fetchProducts(includeDeleted);
+    } catch (err) {
+      console.error("Failed to feature product", err);
+    } finally {
+      formState.setIsDataLoading(false);
+    }
+  };
+
+  const handleUnFeature = async (productID: string) => {
+    try {
+      formState.setIsDataLoading(true);
+      const promise = productsService.unfeature(productID);
+
+      await promise;
+
+      toast.promise(promise, {
+        loading: "Unfeaturing product...",
+        success: "Product unfeatured.",
+        error: "Error unfeaturing product.",
+      });
+
+      await fetchProducts(includeDeleted);
+    } catch (err) {
+      console.error("Failed to unfeature product", err);
+    } finally {
+      formState.setIsDataLoading(false);
+    }
+  };
+
   return {
     state: {
       table: tableState,
@@ -316,6 +356,8 @@ export function useProducts() {
       handleConfirmDelOperation,
       onSubmit,
       fetchProducts,
+      handleFeature,
+      handleUnFeature,
     },
   };
 }

@@ -3,6 +3,7 @@ import { TableDropdown } from "@/components/table-dropdown";
 
 import { formatDate } from "@/lib/utils/date";
 import { Product } from "@/types/product";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 
 interface ColumnActions {
@@ -10,6 +11,9 @@ interface ColumnActions {
   onSoftDelete: (productId: string) => void;
   onHardDelete: (productId: string) => void;
   onRestore: (productId: string) => void;
+  onFeature: (productId: string) => void;
+  onUnfeature: (productId: string) => void;
+  onViewRatings: (productId: string) => void;
 }
 
 export const columns = ({
@@ -17,6 +21,9 @@ export const columns = ({
   onSoftDelete,
   onHardDelete,
   onRestore,
+  onFeature,
+  onUnfeature,
+  onViewRatings,
 }: ColumnActions): ColumnDef<Product>[] => [
   {
     accessorKey: "imageUrl",
@@ -105,7 +112,21 @@ export const columns = ({
                 ? () => onRestore(product.id)
                 : undefined,
             }}
-          />
+          >
+            <DropdownMenuItem onClick={() => onViewRatings(product.id)}>
+              Ratings
+            </DropdownMenuItem>
+
+            {product.isFeatured ? (
+              <DropdownMenuItem onClick={() => onUnfeature(product.id)}>
+                Unfeature
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => onFeature(product.id)}>
+                Feature
+              </DropdownMenuItem>
+            )}
+          </TableDropdown>
         </>
       );
     },

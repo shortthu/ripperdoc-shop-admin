@@ -85,6 +85,9 @@ export default function Products() {
           onSoftDelete: actions.handleSoftDelete,
           onHardDelete: actions.handleHardDelete,
           onRestore: actions.handleRestore,
+          onFeature: actions.handleFeature,
+          onUnfeature: actions.handleUnFeature,
+          onViewRatings: () => {},
         })}
         data={table.data}
         loading={table.tableLoading}
@@ -118,7 +121,7 @@ export default function Products() {
         description={deleteState.alertMessage.description}
         onConfirm={actions.handleConfirmDelOperation}
         isLoading={form.isDataLoading}
-      ></ConfirmationDialog>
+      />
     </div>
   );
 }

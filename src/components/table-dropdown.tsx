@@ -23,11 +23,13 @@ interface TableRecord {
 interface TableDropdownProps<T extends TableRecord> {
   record: T;
   actions: TableActions;
+  children?: React.ReactNode;
 }
 
 export function TableDropdown<T extends TableRecord>({
   record,
   actions,
+  children,
 }: TableDropdownProps<T>) {
   const isSoftDeleted = Boolean(record.deletedAt);
 
@@ -47,6 +49,9 @@ export function TableDropdown<T extends TableRecord>({
             <DropdownMenuItem id="update" onClick={actions.onUpdate}>
               Update
             </DropdownMenuItem>
+
+            {children}
+
             <DropdownMenuSeparator />
             {actions.onSoftDelete && (
               <DropdownMenuItem
