@@ -30,7 +30,9 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Image" />
     ),
-    // cell: ({ getValue })
+    cell: ({ row }) => {
+      return <img src={row.getValue("imageUrl")!.toString()}></img>;
+    },
   },
   {
     accessorKey: "name",
@@ -50,7 +52,15 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Price" />
     ),
-    // cell: ({ getValue })
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("price"));
+      const formatted = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+      }).format(amount);
+
+      return <div className="text-right font-medium">€{formatted}</div>;
+    },
   },
   {
     accessorKey: "isFeatured",

@@ -1,6 +1,6 @@
 import { Loader2 } from "lucide-react";
 import pluralize from "pluralize";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import z from "zod";
@@ -123,6 +123,11 @@ export function ProductForm({
     }
   };
 
+  useEffect(() => {
+    fetchCategories();
+    fetchBrands();
+  }, []);
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
@@ -201,14 +206,17 @@ export function ProductForm({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  min={0}
-                  step="0.01"
-                  placeholder="Price"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                />
+                <div className="flex gap-2 items-center">
+                  <span className="w-5">€$</span>
+                  <Input
+                    type="number"
+                    min={0}
+                    step="0.01"
+                    placeholder="Price"
+                    {...field}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                  />
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
