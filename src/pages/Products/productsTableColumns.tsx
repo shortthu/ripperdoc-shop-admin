@@ -27,9 +27,7 @@ export const columns = ({
 }: ColumnActions): ColumnDef<Product>[] => [
   {
     accessorKey: "imageUrl",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Image" />
-    ),
+    header: "Image",
     cell: ({ row }) => {
       return <img src={row.getValue("imageUrl")!.toString()}></img>;
     },
@@ -67,7 +65,8 @@ export const columns = ({
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Featured" />
     ),
-    // cell: ({ getValue })
+    cell: ({ row }) =>
+      row.getValue("isFeatured") === true ? <span>⭐</span> : <span>❌</span>,
   },
   {
     accessorKey: "category.name",
