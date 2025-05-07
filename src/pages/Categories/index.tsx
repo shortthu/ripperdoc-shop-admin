@@ -14,6 +14,7 @@ import { columns } from "./categoriesTableColumns";
 import { useCategories } from "./useCategories";
 import { UI_LABELS } from "@/lib/routes";
 import pluralize from "pluralize";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Categories() {
   const { state, actions } = useCategories();
@@ -98,12 +99,14 @@ export default function Categories() {
             ? `Update ${pluralize.singular(UI_LABELS.categories)}`
             : `Create ${pluralize.singular(UI_LABELS.categories)}`}
         </SheetTitle>
-        <CategoryForm
-          form={form.form}
-          onSubmit={actions.onSubmit}
-          onCancel={() => form.setOpenSheet(false)}
-          isLoading={form.isDataLoading}
-        />
+        <ScrollArea className="max-h-[90vh]">
+          <CategoryForm
+            form={form.form}
+            onSubmit={actions.onSubmit}
+            onCancel={() => form.setOpenSheet(false)}
+            isLoading={form.isDataLoading}
+          />
+        </ScrollArea>
       </InfoUpdateSheet>
 
       <ConfirmationDialog

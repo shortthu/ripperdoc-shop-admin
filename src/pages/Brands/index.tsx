@@ -14,6 +14,7 @@ import { UI_LABELS } from "@/lib/routes";
 import { BrandForm } from "./BrandForm";
 import { columns } from "./brandsTableColumns";
 import { useBrands } from "./useBrands";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Brands() {
   const { state, actions } = useBrands();
@@ -98,12 +99,14 @@ export default function Brands() {
             ? `Update ${pluralize.singular(UI_LABELS.brands)}`
             : `Create ${pluralize.singular(UI_LABELS.brands)}`}
         </SheetTitle>
-        <BrandForm
-          form={form.form}
-          onSubmit={actions.onSubmit}
-          onCancel={() => form.setOpenSheet(false)}
-          isLoading={form.isDataLoading}
-        />
+        <ScrollArea className="max-h-[90vh]">
+          <BrandForm
+            form={form.form}
+            onSubmit={actions.onSubmit}
+            onCancel={() => form.setOpenSheet(false)}
+            isLoading={form.isDataLoading}
+          />
+        </ScrollArea>
       </InfoUpdateSheet>
 
       <ConfirmationDialog

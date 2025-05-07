@@ -14,6 +14,7 @@ import { UI_LABELS } from "@/lib/routes";
 import { ProductForm } from "./ProductForm";
 import { columns } from "./productsTableColumns";
 import { useProducts } from "./useProducts";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Products() {
   const { state, actions } = useProducts();
@@ -106,12 +107,14 @@ export default function Products() {
             ? `Update ${pluralize.singular(UI_LABELS.products)}`
             : `Create ${pluralize.singular(UI_LABELS.products)}`}
         </SheetTitle>
-        <ProductForm
-          form={form.form}
-          onSubmit={actions.onSubmit}
-          onCancel={() => form.setOpenSheet(false)}
-          isLoading={form.isDataLoading}
-        />
+        <ScrollArea className="max-h-[90vh]">
+          <ProductForm
+            form={form.form}
+            onSubmit={actions.onSubmit}
+            onCancel={() => form.setOpenSheet(false)}
+            isLoading={form.isDataLoading}
+          />
+        </ScrollArea>
       </InfoUpdateSheet>
 
       <ConfirmationDialog
