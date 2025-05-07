@@ -37,7 +37,10 @@ export const productFormSchema = z.object({
   price: z.number().min(0, "Price must be a positive number"),
   isFeatured: z.boolean(),
   categoryId: z.string().uuid("Invalid category ID"),
-  brandId: z.string().uuid("Invalid brand ID").nullable(),
+  brandId: z
+    .union([z.string().uuid("Invalid brand ID"), z.literal("__none__")])
+    .nullable()
+    .transform((val) => (val === "__none__" ? null : val)),
 });
 
 export function ProductForm({
@@ -266,7 +269,7 @@ export function ProductForm({
               <FormLabel>Brand</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value ?? undefined}
+                  value={field.value ?? "__none__"}
                   onValueChange={field.onChange}
                   onOpenChange={(open) => open && fetchBrands()}
                 >
@@ -279,6 +282,7 @@ export function ProductForm({
                   </SelectTrigger>
                   {!loadingFields && brands.length && (
                     <SelectContent>
+                      <SelectItem value={"__none__"}>None</SelectItem>
                       {brands.map((item) => (
                         <SelectItem key={item.id} value={item.id}>
                           {item.name}

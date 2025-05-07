@@ -254,11 +254,16 @@ export function useProducts() {
 
   async function onSubmit(values: z.infer<typeof productFormSchema>) {
     try {
+      const payload = {
+        ...values,
+        brandId: values.brandId === "__none__" ? null : values.brandId,
+      };
+
       formState.setIsDataLoading(true);
 
       const promise = formState.isEditMode
-        ? productsService.update(product.id!, values)
-        : productsService.create(values);
+        ? productsService.update(product.id!, payload)
+        : productsService.create(payload);
 
       await promise;
 
